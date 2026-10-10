@@ -6,21 +6,30 @@
    ===================================================================== */
 
 const CONFIG = {
-  // Country code + number, digits only. 91 = India. This is a DUMMY number.
-  whatsappNumber: "919999999999",
+  // Country code + number, digits only. 91 = India.
+  // Orders arrive on this WhatsApp number, and it is shown to customers
+  // for bulk orders and customization enquiries.
+  whatsappNumber: "919449802000",
   currency: "\u20b9",
-  orderPrefix: "MN"
+  orderPrefix: "MN",
+
+  // Delivery / pickup date the customer can choose, counted from today.
+  // minDaysAhead: 2 means the earliest date is the day after tomorrow.
+  // Set it to your usual making time. maxDaysAhead is how far ahead they can book.
+  minDaysAhead: 2,
+  maxDaysAhead: 60
 };
 
 /* ---------------------------------------------------------------------
    PRICES  (what a customer pays for ONE chocolate)
    Price of a bar  = bar + layer extra (if 2 or 3 layers) + add-in extra
+                     + customize (only if the customer adds a name/message)
    Price of a mini = mini + add-in extra
    --------------------------------------------------------------------- */
 const PRICES = {
   bar: 100,          // single-flavour bar, plain
   mini: 20,          // 10g mini, plain
-  custom: 200,       // custom name chocolate
+  customize: 50,     // extra for printing a name or message on a bar
   twoLayers: 10,     // extra for a 2-layer bar
   threeLayers: 20    // extra for a 3-layer bar
 };
@@ -49,13 +58,12 @@ const FLAVOURS = [
 ];
 
 /* ---------------------------------------------------------------------
-   THE THREE CHOICES AT THE TOP
+   THE CHOICES AT THE TOP
    img is optional: upload a photo into the "images" folder and add
    img:"images/bar.jpg" to show it on that card. Leave it out to keep the
    drawn picture.
    --------------------------------------------------------------------- */
 const TYPES = [
-  { id:"bar",    label:"Bar",         title:"Bar chocolate",         note:"Full-size bar" },
-  { id:"mini",   label:"Mini 10g",    title:"Mini 10g chocolate",    note:"Bite-size piece" },
-  { id:"custom", label:"Custom name", title:"Custom name chocolate", note:"Your name on it" }
+  { id:"bar",  label:"Bar",      title:"Bar chocolate",      note:"Full-size bar, can be customized" },
+  { id:"mini", label:"Mini 10g", title:"Mini 10g chocolate", note:"Bite-size piece" }
 ];
