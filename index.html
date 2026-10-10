@@ -171,7 +171,20 @@ footer a{color:var(--gold-soft);font-weight:600}
 .pv .d{font-size:14.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
 .pv .p{margin-top:8px;font-weight:700;font-size:17px}
 .pv .n{margin-top:4px;font-size:13px;color:var(--muted)}
-.qchips{margin-top:10px}
+.mixrows{display:grid;gap:8px;margin-top:10px}
+.mixrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px 8px 14px;border:1px solid var(--line);border-radius:12px;background:#fffdf6}
+.mname{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:16px}
+.mixtotal{margin:12px 0 0;font-weight:600;font-size:14.5px;color:#7a2f18}
+.mixtotal.ok{color:#2f5a35}
+.evenrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:10px}
+.evenrow .hint{margin:0}
+.minis{display:flex;gap:8px;align-items:flex-end}
+.mpv{display:flex;flex-direction:column;align-items:center;gap:4px}
+.mpv .choc.mini{width:46px;height:46px}
+.mpv.ghost{opacity:.35}
+.mc{font-weight:700;font-size:13px;color:var(--cocoa);min-height:17px}
+.addbtn:disabled{opacity:.45;cursor:not-allowed}
+.qchips{margin-top:0}
 .qbtn{min-height:44px;min-width:58px;padding:0 16px;border-radius:999px;border:1.5px solid rgba(74,37,17,.3);background:#fffdf6;font-weight:700;font-size:15px;cursor:pointer}
 .qbtn.on{background:var(--cocoa);border-color:var(--cocoa);color:var(--cream)}
 .mini-note{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:#f6e3d6;color:#7a2f18;font-size:14px;font-weight:600}
@@ -407,11 +420,12 @@ const STRUCTS = [
   { id: "two",    label: "2 layers" },
   { id: "three",  label: "3 layers" }
 ];
+const zeroMix = () => Object.fromEntries(FLAVOURS.map(f => [f.id, 0]));
 const weightOf = id => WEIGHTS.find(w => w.id === id);
 const barPrice = (w, addinId) => (w.prices[addinId] === undefined ? null : w.prices[addinId]);
 const barSize = grams => { const w = Math.round(124 + (grams - 100) * 0.44); return { w, h: Math.round(w * 0.61) }; };
 
-const st = { kind: "bar", weight: WEIGHTS[0].id, structure: "single", flavor: FLAVOURS[0].id, pair: PAIRS[0].id, addIn: ADDINS[0].id, cz: false, qty: 1 };
+const st = { kind: "bar", weight: WEIGHTS[0].id, structure: "single", flavor: FLAVOURS[0].id, pair: PAIRS[0].id, addIn: ADDINS[0].id, cz: false, qty: 1, mix: zeroMix() };
 const cart = [];            // { key, kind, title, detail, unit, qty, customText }
 const miniByAddin = () => {                      // { plain: 6, nuts: 10 } minis in the cart, per add-in
   const o = {};
@@ -421,7 +435,6 @@ const miniByAddin = () => {                      // { plain: 6, nuts: 10 } minis
 const miniShort = () => Object.entries(miniByAddin())
   .filter(([, n]) => n < PRICES.miniMinimum)
   .map(([id, n]) => ({ label: addinOf(id).label, have: n, need: PRICES.miniMinimum - n }));
-const miniDefault = () => Math.max(1, PRICES.miniMinimum - (miniByAddin()[st.addIn] || 0));   // how many more of this type
 let touched = false;        // has the customer changed the builder since the last Add?
 let lastMessage = "";
 
@@ -482,10 +495,22 @@ function buildBuilder() {
     </fieldset>
 
     <div class="bgroup" id="g-mini">
-      <span class="lg">How many minis?</span>
+      <span class="lg">How many of each?</span>
       <p class="note">Minimum <b>${PRICES.miniMinimum} pieces</b> of the same type: all Plain, or all Fruits &amp; Nuts. Mix Dark, Milk and White however you like.</p>
-      <p class="hint" id="mini-progress"></p>
-      <div class="chips qchips" id="quick-qty">${[1, 2, 3, 5].map(k => `<button type="button" class="qbtn" data-q="${PRICES.miniMinimum * k}">${PRICES.miniMinimum * k}</button>`).join("")}</div>
+      <div class="mixrows">${FLAVOURS.map(f => `
+        <div class="mixrow">
+          <span class="mname"><i class="dot" style="background:${f.color}"></i>${esc(f.label)}</span>
+          <div class="stepper" role="group" aria-label="${esc(f.label)} quantity">
+            <button type="button" data-mix="dec" data-f="${f.id}" aria-label="One less ${esc(f.label)}">&minus;</button>
+            <span class="qty" id="mx-${f.id}">0</span>
+            <button type="button" data-mix="inc" data-f="${f.id}" aria-label="One more ${esc(f.label)}">+</button>
+          </div>
+        </div>`).join("")}
+      </div>
+      <p class="mixtotal" id="mix-total" aria-live="polite"></p>
+      <div class="evenrow"><span class="hint">Or an even mix of:</span>
+        <div class="chips qchips" id="quick-qty">${[1, 2, 3, 5].map(k => `<button type="button" class="qbtn" data-q="${PRICES.miniMinimum * k}">${PRICES.miniMinimum * k}</button>`).join("")}</div>
+      </div>
     </div>
 
     <div class="preview" aria-live="polite">
@@ -499,7 +524,7 @@ function buildBuilder() {
     </div>
 
     <div class="buy">
-      <div class="stepper" role="group" aria-label="Quantity">
+      <div class="stepper" id="bq-wrap" role="group" aria-label="Quantity">
         <button type="button" id="bq-dec" aria-label="One less">&minus;</button>
         <span class="qty" id="bq-val" aria-live="polite">1</span>
         <button type="button" id="bq-inc" aria-label="One more">+</button>
@@ -510,16 +535,9 @@ function buildBuilder() {
 }
 
 /* ---------- Work out the chocolate currently selected ---------- */
-function compute() {
+function compute() {            // the bar currently selected
   const a = addinOf(st.addIn);
   let layers, choc, unit;
-  if (st.kind === "mini") {
-    layers = [st.flavor];
-    choc = flavour(st.flavor).label;
-    unit = PRICES.mini + a.mini;
-    return { kind: "mini", key: ["mini", st.flavor, a.id].join("|"), title: typeOf("mini").title,
-             detail: choc + " \u00b7 " + a.label, unit, layers, addIn: a.id, customText: "", grams: 10 };
-  }
   const w = weightOf(st.weight);
   const pairIdx = PAIRS.findIndex(p => p.id === st.pair);
   unit = barPrice(w, a.id);
@@ -535,6 +553,23 @@ function compute() {
            detail: w.label + " \u00b7 " + choc + " \u00b7 " + a.label, unit, layers, addIn: a.id, customText: text, grams: w.grams };
 }
 
+/* What "Add to order" would add right now: one bar, or one line per flavour of minis */
+function pendingItems() {
+  if (st.kind === "mini") {
+    const a = addinOf(st.addIn);
+    return FLAVOURS.filter(f => st.mix[f.id] > 0).map(f => ({
+      kind: "mini", key: ["mini", f.id, a.id].join("|"), title: typeOf("mini").title,
+      detail: f.label + " \u00b7 " + a.label, unit: PRICES.mini + a.mini, layers: [f.id], addIn: a.id,
+      customText: "", grams: 10, qty: st.mix[f.id]
+    }));
+  }
+  return [{ ...compute(), qty: st.qty }];
+}
+const pendingTotal = items => items.reduce((n, i) => n + i.unit * i.qty, 0);
+const pendingLabel = items => items[0].kind === "mini"
+  ? items.reduce((n, i) => n + i.qty, 0) + " " + items[0].title + " (" + items.map(i => i.qty + " " + flavour(i.layers[0]).label).join(" + ") + ", " + addinOf(items[0].addIn).label + ")"
+  : items[0].qty + " \u00d7 " + items[0].title + ": " + items[0].detail;
+
 /* ---------- Keep the builder screen in step with the choices ---------- */
 function syncBuilder() {
   if (st.kind === "mini" && addinOf(st.addIn).mini === null) st.addIn = ADDINS[0].id;
@@ -544,17 +579,27 @@ function syncBuilder() {
   const bar = st.kind === "bar", mini = st.kind === "mini";
   $("#g-weight").hidden = !bar;
   $("#g-struct").hidden = !bar;
-  $("#g-flavor").hidden = !(mini || (bar && st.structure === "single"));
   $("#g-pair").hidden   = !(bar && st.structure === "two");
   $("#g-three").hidden  = !(bar && st.structure === "three");
   $("#g-mini").hidden   = !mini;
+  $("#bq-wrap").hidden  = mini;
+  $("#g-flavor").hidden = !(bar && st.structure === "single");
+  const mixTotal = FLAVOURS.reduce((n, f) => n + st.mix[f.id], 0);
   if (mini) {
-    const have = miniByAddin()[st.addIn] || 0;
-    $("#mini-progress").textContent = have > 0
-      ? addinOf(st.addIn).label + " minis in your order so far: " + have + " (minimum " + PRICES.miniMinimum + ")."
-      : "";
+    const ad = addinOf(st.addIn), have = miniByAddin()[st.addIn] || 0;
+    const need = Math.max(0, PRICES.miniMinimum - have - mixTotal);
+    FLAVOURS.forEach(f => { $("#mx-" + f.id).textContent = st.mix[f.id]; });
+    $$('[data-mix="dec"]').forEach(bn => { bn.disabled = st.mix[bn.dataset.f] <= 0; });
+    $$('[data-mix="inc"]').forEach(bn => { bn.disabled = st.mix[bn.dataset.f] >= maxQty("mini"); });
+    const mt = $("#mix-total");
+    mt.textContent = mixTotal === 0
+      ? (have > 0 ? ad.label + " minis already in your order: " + have + ". Minimum " + PRICES.miniMinimum + "."
+                  : "Pick how many of each. Minimum " + PRICES.miniMinimum + " " + ad.label + " minis.")
+      : mixTotal + " selected" + (have ? " (+" + have + " already in your order)" : "") +
+        (need > 0 ? ", " + need + " more needed to reach " + PRICES.miniMinimum + "." : ". Minimum reached.");
+    mt.classList.toggle("ok", mixTotal > 0 && need === 0);
   }
-  $$("#quick-qty .qbtn").forEach(bn => bn.classList.toggle("on", +bn.dataset.q === st.qty));
+  $$("#quick-qty .qbtn").forEach(bn => bn.classList.toggle("on", mixTotal === +bn.dataset.q));
   $("#g-cz").hidden     = !bar;
   $("#cz-on").checked   = st.cz;
   $("#cz-box").hidden   = !(bar && st.cz);
@@ -581,18 +626,31 @@ function syncBuilder() {
     $(".x", l).textContent = v > 0 ? "+" + fmt(v) : "";
   });
 
+  const pn = $("#pv-note");
+  if (mini) {
+    const ad = addinOf(st.addIn), items = pendingItems(), cost = pendingTotal(items), each = PRICES.mini + ad.mini;
+    const shown = items.length ? items : [{ layers: [FLAVOURS[0].id], qty: 0 }];
+    $("#stage").innerHTML = `<div class="minis">${shown.map(i => `<div class="mpv${i.qty ? "" : " ghost"}"><div class="choc mini">${i.layers.map(id => `<div class="layer" style="background:${flavour(id).color}"></div>`).join("")}${ad.id !== "plain" ? `<div class="bits ${ad.id}"></div>` : ""}</div><span class="mc">${i.qty ? "\u00d7" + i.qty : ""}</span></div>`).join("")}</div>`;
+    $("#pv-title").textContent = typeOf("mini").title;
+    $("#pv-detail").textContent = mixTotal ? items.map(i => i.qty + " " + flavour(i.layers[0]).label).join(" + ") + " \u00b7 " + ad.label : "Choose how many of each flavour";
+    $("#pv-price").textContent = mixTotal ? fmt(cost) + " for " + mixTotal + " pieces (" + fmt(each) + " each)" : fmt(each) + " each";
+    pn.hidden = true;
+    $("#add-btn").textContent = mixTotal ? "Add " + mixTotal + " minis \u00b7 " + fmt(cost) : "Add to order";
+    $("#add-btn").disabled = mixTotal === 0;
+    return;
+  }
   const c = compute();
   const len = (c.customText || "Your name").length;
   const label = bar && st.cz
     ? `<div class="nametext" style="font-size:${len > 16 ? 13 : len > 9 ? 16 : 20}px">${esc(c.customText || "Your name")}</div>` : "";
-  const sz = c.kind === "bar" ? barSize(c.grams) : null;
-  $("#stage").innerHTML = `<div class="choc ${c.kind}"${sz ? ` style="width:${sz.w}px;height:${sz.h}px"` : ""}>${c.layers.map(id => `<div class="layer" style="background:${flavour(id).color}"></div>`).join("")}${c.addIn !== "plain" ? `<div class="bits ${c.addIn}"></div>` : ""}${label}</div>`;
+  const sz = barSize(c.grams);
+  $("#stage").innerHTML = `<div class="choc bar" style="width:${sz.w}px;height:${sz.h}px">${c.layers.map(id => `<div class="layer" style="background:${flavour(id).color}"></div>`).join("")}${c.addIn !== "plain" ? `<div class="bits ${c.addIn}"></div>` : ""}${label}</div>`;
   $("#pv-detail").textContent = c.detail + (c.customText ? " \u00b7 Printed: " + c.customText : "");
   $("#pv-title").textContent = c.title;
   $("#pv-price").textContent = fmt(c.unit) + " each";
-  const pn = $("#pv-note");
   pn.hidden = !(bar && st.cz);
   pn.textContent = "+ customization, from " + fmt(PRICES.customizeFrom) + " (confirmed on WhatsApp)";
+  $("#add-btn").disabled = false;
   $("#add-btn").textContent = "Add to order \u00b7 " + fmt(c.unit * st.qty);
   $("#bq-val").textContent = st.qty;
   $("#bq-dec").disabled = st.qty <= 1;
@@ -608,12 +666,12 @@ $("#builder").addEventListener("change", e => {
     return;
   }
   if (t.type !== "radio") return;
-  if (t.name === "kind") { st.kind = t.value; st.qty = st.kind === "mini" ? miniDefault() : 1; }
+  if (t.name === "kind") { st.kind = t.value; st.qty = 1; }
   if (t.name === "weight") st.weight = t.value;
   if (t.name === "structure") st.structure = t.value;
   if (t.name === "flavor") st.flavor = t.value;
   if (t.name === "pair") st.pair = t.value;
-  if (t.name === "addin") { st.addIn = t.value; if (st.kind === "mini") st.qty = miniDefault(); }
+  if (t.name === "addin") st.addIn = t.value;
   $("#added").textContent = "";
   syncBuilder();
 });
@@ -625,7 +683,19 @@ $("#builder").addEventListener("input", e => {
 });
 $("#builder").addEventListener("click", e => {
   const qb = e.target.closest(".qbtn");
-  if (qb) { touched = true; st.qty = Math.min(maxQty(st.kind), +qb.dataset.q); syncBuilder(); }
+  if (qb) {                      // even mix: split N across the flavours
+    touched = true;
+    const n = +qb.dataset.q, k = FLAVOURS.length, base = Math.floor(n / k), rem = n % k;
+    FLAVOURS.forEach((f, i) => { st.mix[f.id] = base + (i < rem ? 1 : 0); });
+    $("#added").textContent = ""; syncBuilder();
+  }
+  const mb = e.target.closest("button[data-mix]");
+  if (mb) {
+    touched = true;
+    const f = mb.dataset.f, d = mb.dataset.mix === "inc" ? 1 : -1;
+    st.mix[f] = Math.max(0, Math.min(maxQty("mini"), st.mix[f] + d));
+    $("#added").textContent = ""; syncBuilder();
+  }
   if (e.target.closest("#bq-dec")) { touched = true; st.qty = Math.max(1, st.qty - 1); syncBuilder(); }
   if (e.target.closest("#bq-inc")) { touched = true; st.qty = Math.min(maxQty(st.kind), st.qty + 1); syncBuilder(); }
   if (e.target.closest("#add-btn")) addToCart();
@@ -633,25 +703,27 @@ $("#builder").addEventListener("click", e => {
 
 let flashTimer;
 function addToCart() {
-  const c = compute();
-  if (c.kind === "bar" && st.cz && !c.customText) {
+  const items = pendingItems();
+  if (!items.length) return;
+  if (items[0].kind === "bar" && st.cz && !items[0].customText) {
     const err = $("#cz-err"); err.textContent = "Type the name or message you want printed, or untick Customize."; err.hidden = false;
     $("#cz-text").classList.add("invalid"); $("#cz-text").focus();
     return;
   }
-  const have = cart.find(l => l.key === c.key);
-  if (have) have.qty = Math.min(maxQty(c.kind), have.qty + st.qty);
-  else cart.push({ ...c, qty: st.qty });
+  items.forEach(c => {
+    const have = cart.find(l => l.key === c.key);
+    if (have) have.qty = Math.min(maxQty(c.kind), have.qty + c.qty);
+    else cart.push({ ...c });
+  });
 
-  $("#added").textContent = "Added: " + st.qty + " \u00d7 " + c.title + ", " + c.detail + (c.customText ? " (printed: " + c.customText + ")" : "") + ".";
+  $("#added").textContent = "Added: " + pendingLabel(items) + (items[0].customText ? " (printed: " + items[0].customText + ")" : "") + ".";
   const btn = $("#add-btn");
-  btn.classList.add("ok"); btn.textContent = "Added \u2713";
   clearTimeout(flashTimer);
-  flashTimer = setTimeout(() => { btn.classList.remove("ok"); syncBuilder(); }, 1100);
-  st.qty = st.kind === "mini" ? miniDefault() : 1; touched = false;
+  st.qty = 1; touched = false; st.mix = zeroMix();
   st.cz = false; $("#cz-text").value = "";
   syncBuilder();
   btn.classList.add("ok"); btn.textContent = "Added \u2713";
+  flashTimer = setTimeout(() => { btn.classList.remove("ok"); syncBuilder(); }, 1100);
   renderCart();
 }
 
@@ -751,11 +823,11 @@ function validate() {
   const empty = cart.length === 0;
   let quick = false;
   if (empty) {
-    const c = compute();
-    quick = touched && !(st.kind === "bar" && st.cz && !c.customText);
+    const items = pendingItems();
+    quick = touched && items.length > 0 && !(st.kind === "bar" && st.cz && !items[0].customText);
     const el = $("#cart-err");
     el.innerHTML = quick
-      ? `You haven't added your chocolate to the order yet. <button type="button" class="qa" id="quick-add">Add ${st.qty} \u00d7 ${esc(c.title)}: ${esc(c.detail)} \u00b7 ${fmt(c.unit * st.qty)}</button>`
+      ? `You haven't added your chocolate to the order yet. <button type="button" class="qa" id="quick-add">Add ${esc(pendingLabel(items))} \u00b7 ${fmt(pendingTotal(items))}</button>`
       : `Your order is empty. Choose a chocolate and tap <b>Add to order</b>.`;
     el.hidden = false;
     first = first || "#cart-err";
@@ -858,7 +930,7 @@ $("#copy-btn").addEventListener("click", async () => {
 });
 
 $("#new-btn").addEventListener("click", () => {
-  cart.length = 0; touched = false; st.qty = st.kind === "mini" ? PRICES.miniMinimum : 1;
+  cart.length = 0; touched = false; st.qty = 1; st.mix = zeroMix();
   $("#cz-text").value = ""; st.cz = false;
   $("#date").value = "";
   $("#added").textContent = "";
