@@ -413,8 +413,15 @@ const barSize = grams => { const w = Math.round(124 + (grams - 100) * 0.44); ret
 
 const st = { kind: "bar", weight: WEIGHTS[0].id, structure: "single", flavor: FLAVOURS[0].id, pair: PAIRS[0].id, addIn: ADDINS[0].id, cz: false, qty: 1 };
 const cart = [];            // { key, kind, title, detail, unit, qty, customText }
-const miniCount = () => cart.filter(l => l.kind === "mini").reduce((n, l) => n + l.qty, 0);
-const miniDefault = () => Math.max(1, PRICES.miniMinimum - miniCount());   // how many more minis are needed
+const miniByAddin = () => {                      // { plain: 6, nuts: 10 } minis in the cart, per add-in
+  const o = {};
+  cart.filter(l => l.kind === "mini").forEach(l => { o[l.addIn] = (o[l.addIn] || 0) + l.qty; });
+  return o;
+};
+const miniShort = () => Object.entries(miniByAddin())
+  .filter(([, n]) => n < PRICES.miniMinimum)
+  .map(([id, n]) => ({ label: addinOf(id).label, have: n, need: PRICES.miniMinimum - n }));
+const miniDefault = () => Math.max(1, PRICES.miniMinimum - (miniByAddin()[st.addIn] || 0));   // how many more of this type
 let touched = false;        // has the customer changed the builder since the last Add?
 let lastMessage = "";
 
@@ -476,7 +483,8 @@ function buildBuilder() {
 
     <div class="bgroup" id="g-mini">
       <span class="lg">How many minis?</span>
-      <p class="note">Minimum order is <b>${PRICES.miniMinimum} mini pieces</b>. You can mix any flavours and add-ins.</p>
+      <p class="note">Minimum <b>${PRICES.miniMinimum} pieces</b> of the same type: all Plain, or all Fruits &amp; Nuts. Mix Dark, Milk and White however you like.</p>
+      <p class="hint" id="mini-progress"></p>
       <div class="chips qchips" id="quick-qty">${[1, 2, 3, 5].map(k => `<button type="button" class="qbtn" data-q="${PRICES.miniMinimum * k}">${PRICES.miniMinimum * k}</button>`).join("")}</div>
     </div>
 
@@ -540,6 +548,12 @@ function syncBuilder() {
   $("#g-pair").hidden   = !(bar && st.structure === "two");
   $("#g-three").hidden  = !(bar && st.structure === "three");
   $("#g-mini").hidden   = !mini;
+  if (mini) {
+    const have = miniByAddin()[st.addIn] || 0;
+    $("#mini-progress").textContent = have > 0
+      ? addinOf(st.addIn).label + " minis in your order so far: " + have + " (minimum " + PRICES.miniMinimum + ")."
+      : "";
+  }
   $$("#quick-qty .qbtn").forEach(bn => bn.classList.toggle("on", +bn.dataset.q === st.qty));
   $("#g-cz").hidden     = !bar;
   $("#cz-on").checked   = st.cz;
@@ -599,7 +613,7 @@ $("#builder").addEventListener("change", e => {
   if (t.name === "structure") st.structure = t.value;
   if (t.name === "flavor") st.flavor = t.value;
   if (t.name === "pair") st.pair = t.value;
-  if (t.name === "addin") st.addIn = t.value;
+  if (t.name === "addin") { st.addIn = t.value; if (st.kind === "mini") st.qty = miniDefault(); }
   $("#added").textContent = "";
   syncBuilder();
 });
@@ -667,9 +681,10 @@ function renderCart(focus) {
   $("#total-row").hidden = cart.length === 0;
   $("#total").textContent = fmt(total);
   $("#cz-total-note").hidden = !cart.some(l => l.customText);
-  const minis = miniCount(), mn = $("#mini-note");
-  mn.hidden = !(minis > 0 && minis < PRICES.miniMinimum);
-  mn.textContent = `Minis have a minimum order of ${PRICES.miniMinimum} pieces. You have ${minis}, add ${PRICES.miniMinimum - minis} more.`;
+  const short = miniShort(), mn = $("#mini-note");
+  mn.hidden = short.length === 0;
+  mn.textContent = short.map(x => `${x.label} minis: you have ${x.have}, add ${x.need} more.`).join(" ")
+    + ` Each type needs at least ${PRICES.miniMinimum}, and Plain and Fruits & Nuts can't be counted together.`;
   $("#cz-from").textContent = fmt(PRICES.customizeFrom);
   if (cart.length) $("#cart-err").hidden = true;
 
@@ -750,8 +765,7 @@ function validate() {
   if (!normPhone($("#phone").value)) bad("#phone", "#phone-err", "Enter a 10-digit mobile number, like 98765 43210.");
   const delivery = document.querySelector('input[name="mode"]:checked').value === "Delivery";
   if (delivery && $("#address").value.trim().length < 8) bad("#address", "#address-err", "Enter your full delivery address.");
-  const minis = miniCount();
-  if (!empty && minis > 0 && minis < PRICES.miniMinimum) first = first || "#mini-note";   // the red note above the Send button already explains it
+  if (!empty && miniShort().length) first = first || "#mini-note";   // the red note above the Send button already explains it
   const dv = $("#date").value;
   if (!dv) bad("#date", "#date-err", "Choose your preferred date.");
   else if (dv < dateMin() || dv > dateMax())
