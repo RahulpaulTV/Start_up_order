@@ -114,9 +114,17 @@ h3.cat::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(
 .swatch[data-type="milk"]{--c:#8a4b2a}
 .swatch[data-type="caramel"]{--c:#b4742f}
 .swatch[data-type="white"]{--c:#eadfc2}
+.swatch[data-type="mix"]{background-color:#8a4b2a;background-image:
+    linear-gradient(rgba(0,0,0,.2) 1.5px,transparent 1.5px),
+    linear-gradient(90deg,#4a2511 0 33.3%,#8a4b2a 33.3% 66.6%,#eadfc2 66.6% 100%);
+  background-size:100% 50%,100% 100%}
 .swatch[data-type="white"]{background-image:
     linear-gradient(rgba(120,90,40,.25) 1.5px,transparent 1.5px),
     linear-gradient(90deg,rgba(120,90,40,.25) 1.5px,transparent 1.5px)}
+.item.has-photo{grid-template-columns:78px minmax(0,1fr) auto}
+.photo{width:78px;height:78px;border-radius:12px;object-fit:cover;background:var(--parchment);box-shadow:0 2px 8px rgba(74,37,17,.18)}
+.custom-field{grid-column:1/-1;background:var(--parchment);padding:12px 14px 14px;border-radius:12px}
+.custom-field label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
 .item .name{font-family:var(--display);font-size:18px;line-height:1.25;color:var(--cocoa)}
 .item .desc{font-size:14px;color:var(--muted);margin-top:2px}
 .item .price{font-weight:600;font-size:15px;margin-top:4px}
@@ -246,7 +254,7 @@ body.has-bar footer{margin-bottom:0}
 
     <section aria-labelledby="menu-h">
       <h2 id="menu-h">Our chocolates</h2>
-      <p class="sub">Sample menu. Prices are per item or box.</p>
+      <p class="sub">Pick as many as you like. Tap Add on anything you want.</p>
       <div id="menu"></div>
     </section>
 
@@ -325,37 +333,11 @@ body.has-bar footer{margin-bottom:0}
   A taste from above. Every order is confirmed on WhatsApp before you pay.
 </footer>
 
+<script src="menu.js"></script>
 <script>
-/* ============================================================
-   EDIT THESE: your WhatsApp number and your menu
-   ============================================================ */
-const CONFIG = {
-  // Country code + number, digits only. 91 = India. This is a DUMMY number.
-  whatsappNumber: "919999999999",
-  currency: "₹",
-  orderPrefix: "MN"
-};
-
-// type controls the little chocolate-square colour: dark, milk, caramel, white
-const PRODUCTS = [
-  { id:"dark-bar",     cat:"Bars",                 name:"Classic Dark 70% Bar",      desc:"Single-origin cacao, 100 g. Deep and smooth.",            price:250,  type:"dark" },
-  { id:"milk-hazel",   cat:"Bars",                 name:"Milk Hazelnut Bar",         desc:"Roasted hazelnuts in creamy milk chocolate, 100 g.",      price:280,  type:"milk" },
-  { id:"nib-crunch",   cat:"Bars",                 name:"Cacao Nib Crunch Bar",      desc:"Dark chocolate with a crisp, toasty bite, 100 g.",        price:300,  type:"dark" },
-  { id:"white-pista",  cat:"Bars",                 name:"White Pistachio Bar",       desc:"Cardamom-scented white chocolate, 100 g.",                price:320,  type:"white" },
-
-  { id:"caramel-bon",  cat:"Truffles and pralines", name:"Sea Salt Caramel Bonbons",  desc:"Box of 6. Soft caramel centre, flaked sea salt.",         price:420,  type:"caramel" },
-  { id:"orange-pral",  cat:"Truffles and pralines", name:"Orange Peel Dark Pralines", desc:"Box of 6. Candied orange in dark chocolate.",             price:480,  type:"dark" },
-  { id:"drops-truf",   cat:"Truffles and pralines", name:"Manna Drops Truffles",      desc:"Box of 9. Our signature ganache truffles.",               price:650,  type:"milk" },
-
-  { id:"assorted-16",  cat:"Gift boxes",           name:"Assorted Gift Box",         desc:"16 hand-picked pieces in a keepsake box.",                price:1200, type:"caramel" },
-  { id:"celebration",  cat:"Gift boxes",           name:"Celebration Hamper",        desc:"Two bars, 9 truffles and a drinking chocolate tin.",      price:1850, type:"dark" },
-
-  { id:"hot-choc",     cat:"Drinks",               name:"Drinking Chocolate Mix",    desc:"250 g tin. Whisk into hot milk.",                         price:450,  type:"milk" }
-];
-/* ============================================================ */
-
 const MAX_QTY = 20;
 const $ = (s, r = document) => r.querySelector(s);
+const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = n => CONFIG.currency + n.toLocaleString("en-IN");
 const cart = {};               // product id -> quantity
 let lastMessage = "";
@@ -366,11 +348,13 @@ function buildMenu() {
   $("#menu").innerHTML = cats.map(cat => `
     <h3 class="cat">${cat}</h3>
     ${PRODUCTS.filter(p => p.cat === cat).map(p => `
-      <div class="item" data-id="${p.id}">
-        <div class="swatch" data-type="${p.type}" aria-hidden="true"></div>
+      <div class="item${p.img ? " has-photo" : ""}" data-id="${p.id}">
+        ${p.img
+          ? `<img class="photo" src="${p.img}" alt="" loading="lazy" data-type="${p.type}">`
+          : `<div class="swatch" data-type="${p.type}" aria-hidden="true"></div>`}
         <div>
           <div class="name">${p.name}</div>
-          <div class="desc">${p.desc}</div>
+          ${p.desc ? `<div class="desc">${p.desc}</div>` : ""}
           <div class="price">${fmt(p.price)}</div>
         </div>
         <div class="act">
@@ -381,8 +365,28 @@ function buildMenu() {
             <button type="button" data-act="inc" aria-label="Add one more ${p.name}">+</button>
           </div>
         </div>
+        ${p.custom ? `
+        <div class="custom-field" hidden>
+          <label for="cf-${p.id}">${p.customLabel || "Name"}</label>
+          <input type="text" id="cf-${p.id}" maxlength="60" placeholder="${p.customHint || ""}" autocomplete="off">
+          <p class="err" id="cf-${p.id}-err" role="alert" hidden></p>
+        </div>` : ""}
       </div>`).join("")}
   `).join("");
+}
+
+// If a photo file is missing or misspelled, quietly fall back to the colour square
+function wirePhotoFallback() {
+  document.querySelectorAll("#menu img.photo").forEach(img => {
+    const swap = () => {
+      const sw = document.createElement("div");
+      sw.className = "swatch"; sw.dataset.type = img.dataset.type; sw.setAttribute("aria-hidden", "true");
+      img.closest(".item").classList.remove("has-photo");
+      img.replaceWith(sw);
+    };
+    img.addEventListener("error", swap);
+    if (img.complete && img.naturalWidth === 0) swap();
+  });
 }
 
 $("#menu").addEventListener("click", e => {
@@ -400,6 +404,13 @@ $("#menu").addEventListener("click", e => {
   renderCart();
 });
 
+$("#menu").addEventListener("input", e => {
+  if (!e.target.matches(".custom-field input")) return;
+  e.target.classList.remove("invalid");
+  $("#" + e.target.id + "-err").hidden = true;
+  renderCart();
+});
+
 function syncRow(row, act) {
   const q = cart[row.dataset.id] || 0;
   const add = $(".add", row), step = $(".stepper", row);
@@ -407,13 +418,21 @@ function syncRow(row, act) {
   step.hidden = q === 0;
   $(".qty", row).textContent = q;
   $('[data-act="inc"]', row).disabled = q >= MAX_QTY;
-  if (act === "add") $('[data-act="inc"]', row).focus();
+  const cf = $(".custom-field", row);
+  if (cf) cf.hidden = q === 0;
+  if (act === "add") (cf ? $("input", cf) : $('[data-act="inc"]', row)).focus();
   if (q === 0 && act === "dec") add.focus();
 }
 
 /* ---------- Cart ---------- */
 function cartItems() {
-  return PRODUCTS.filter(p => cart[p.id]).map(p => ({ ...p, qty: cart[p.id], sub: cart[p.id] * p.price }));
+  return PRODUCTS.filter(p => cart[p.id]).map(p => ({
+    ...p,
+    label: p.cat === "Custom" ? p.name : `${p.cat}: ${p.name}`,
+    customText: p.custom ? (($("#cf-" + p.id) || {}).value || "").trim() : "",
+    qty: cart[p.id],
+    sub: cart[p.id] * p.price
+  }));
 }
 
 function renderCart() {
@@ -422,7 +441,7 @@ function renderCart() {
   const count = items.reduce((s, i) => s + i.qty, 0);
 
   $("#lines").innerHTML = items.map(i =>
-    `<li><span>${i.name} <span class="q">× ${i.qty}</span></span><span>${fmt(i.sub)}</span></li>`).join("");
+    `<li><span>${esc(i.label)} <span class="q">× ${i.qty}</span>${i.custom && i.customText ? `<br><span class="q">Name: ${esc(i.customText)}</span>` : ""}</span><span>${fmt(i.sub)}</span></li>`).join("");
   $("#empty").hidden = items.length > 0;
   $("#total-row").hidden = items.length === 0;
   $("#total").textContent = fmt(total);
@@ -459,8 +478,12 @@ function validate() {
   };
   ["#name", "#phone", "#address"].forEach(s => $(s).classList.remove("invalid"));
   ["#name-err", "#phone-err", "#address-err", "#cart-err"].forEach(hide);
+  document.querySelectorAll(".custom-field input").forEach(i => i.classList.remove("invalid"));
+  document.querySelectorAll(".custom-field .err").forEach(e => (e.hidden = true));
 
   if (!cartItems().length) bad(null, "#cart-err", "Add at least one chocolate to your order.");
+  cartItems().filter(i => i.custom && !i.customText).forEach(i =>
+    bad("#cf-" + i.id, "#cf-" + i.id + "-err", "Type the name you want on your custom chocolate."));
   if ($("#name").value.trim().length < 2) bad("#name", "#name-err", "Enter your name.");
   if (!normPhone($("#phone").value)) bad("#phone", "#phone-err", "Enter a 10-digit mobile number, like 98765 43210.");
   const delivery = document.querySelector('input[name="mode"]:checked').value === "Delivery";
@@ -492,7 +515,7 @@ function buildMessage(id) {
     `Hi ${"Manna Chocolates"}, I'd like to place an order.`,
     ``,
     `*Items*`,
-    ...items.map(i => `• ${i.qty} × ${i.name}: ${fmt(i.sub)}`),
+    ...items.map(i => `• ${i.qty} × ${i.label} (#${i.no}): ${fmt(i.sub)}` + (i.custom ? `\n   Custom name: *${i.customText}*` : "")),
     ``,
     `*Items total: ${fmt(total)}*`,
     ``,
@@ -547,6 +570,7 @@ $("#copy-btn").addEventListener("click", async () => {
 
 $("#new-btn").addEventListener("click", () => {
   Object.keys(cart).forEach(k => delete cart[k]);
+  document.querySelectorAll(".custom-field input").forEach(i => (i.value = ""));
   document.querySelectorAll(".item").forEach(r => syncRow(r, "reset"));
   $("#note").value = "";
   $("#done").hidden = true;
@@ -563,6 +587,7 @@ $("#bar-btn").addEventListener("click", () => {
 
 /* ---------- Init ---------- */
 buildMenu();
+wirePhotoFallback();
 try {
   const saved = JSON.parse(localStorage.getItem("manna:details") || "null");
   if (saved) {
