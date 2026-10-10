@@ -152,7 +152,7 @@ h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.2;mar
 .bulk>*{position:relative}
 .bulk h3{font-family:var(--display);font-weight:400;font-size:23px;margin:0 0 6px;color:var(--gold-soft)}
 .bulk p{margin:0 0 12px;color:rgba(248,241,225,.9);font-size:15px}
-.bulk .num{font-family:var(--display);font-size:27px;margin:0 0 16px;letter-spacing:.02em}
+.bulk .num{font-family:var(--body);font-weight:600;font-size:26px;margin:0 0 16px;letter-spacing:.02em}
 .bulk .row{display:flex;flex-wrap:wrap;gap:10px}
 .bulk a.btn{min-height:46px;padding:0 20px;border-radius:999px;display:inline-flex;align-items:center;font-weight:700;text-decoration:none;border:1.5px solid var(--gold);color:var(--cream)}
 .bulk a.btn.primary{background:var(--gold);color:var(--espresso)}
@@ -167,9 +167,11 @@ footer a{color:var(--gold-soft);font-weight:600}
   background:radial-gradient(circle at 50% 28%,rgba(255,255,255,.6),transparent 72%);
 }
 .pv{flex:1;min-width:150px}
-.pv .t{font-family:var(--display);font-size:20px;line-height:1.2;color:var(--cocoa)}
+.pv .t{font-family:var(--body);font-weight:700;font-size:18px;line-height:1.25;color:var(--cocoa)}
 .pv .d{font-size:14.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
 .pv .p{margin-top:8px;font-weight:700;font-size:17px}
+.pv .n{margin-top:4px;font-size:13px;color:var(--muted)}
+.cz-note{margin:10px 0 0;font-size:13px;color:var(--muted)}
 .buy{display:flex;gap:12px;align-items:center}
 .stepper{display:inline-flex;align-items:center;gap:4px;background:var(--parchment);border-radius:999px;padding:3px}
 .stepper button{width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;background:var(--cocoa);color:var(--cream);font-size:20px;line-height:1}
@@ -201,6 +203,8 @@ input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .phone span{display:grid;place-items:center;padding:0 12px;background:var(--parchment);border:1px solid rgba(74,37,17,.3);border-right:0;border-radius:10px 0 0 10px;font-weight:600}
 .phone input{border-radius:0 10px 10px 0}
 .err{color:var(--danger);font-size:13px;margin:6px 0 0}
+.qa{display:block;width:100%;margin-top:8px;padding:11px 14px;border-radius:10px;border:0;background:var(--cocoa);color:var(--cream);font-weight:600;font-size:14.5px;text-align:left;cursor:pointer}
+.addbtn.nudge{box-shadow:0 0 0 4px rgba(199,154,63,.6)}
 .invalid{border-color:var(--danger) !important}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .seg label{margin:0;position:relative}
@@ -222,7 +226,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .empty{margin:10px 0 0;color:var(--muted);font-size:15px;padding:14px;background:var(--parchment);border-radius:10px}
 .total{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px}
 .total span:first-child{font-weight:600}
-.total .amt{font-family:var(--display);font-size:28px;color:var(--cocoa)}
+.total .amt{font-family:var(--body);font-weight:700;font-size:26px;color:var(--cocoa)}
 .send{
   width:100%;min-height:54px;margin-top:18px;border:0;border-radius:12px;cursor:pointer;
   background:var(--espresso);color:var(--cream);font-weight:700;font-size:17px;
@@ -233,6 +237,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .after{font-size:13px;color:var(--muted);margin:12px 0 0}
 .done{margin-top:18px;padding:18px;border-radius:12px;background:var(--espresso);color:var(--cream)}
 .done h3{font-family:var(--display);font-weight:400;font-size:21px;margin:0 0 6px;color:var(--gold-soft)}
+#done-id{font-family:var(--body);font-weight:600}
 .done p{margin:0 0 12px;font-size:15px;color:rgba(248,241,225,.88)}
 .done .row{display:flex;flex-wrap:wrap;gap:10px}
 .done a,.done button{min-height:44px;padding:0 16px;border-radius:999px;font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none;border:1.5px solid var(--gold);background:transparent;color:var(--cream)}
@@ -244,7 +249,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
   padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));background:var(--espresso);color:var(--cream);box-shadow:0 -10px 30px rgba(0,0,0,.25);
 }
 .cartbar small{display:block;font-size:13px;color:rgba(248,241,225,.75)}
-.cartbar strong{font-family:var(--display);font-weight:400;font-size:24px}
+.cartbar strong{font-family:var(--body);font-weight:700;font-size:22px}
 .cartbar button{min-height:46px;padding:0 24px;border-radius:999px;border:0;cursor:pointer;background:var(--gold);color:var(--espresso);font-weight:700;font-size:16px}
 footer{background:var(--espresso);color:rgba(248,241,225,.8);text-align:center;padding:30px 20px calc(30px + env(safe-area-inset-bottom,0px));font-size:14px}
 footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-size:18px;display:block;margin-bottom:4px}
@@ -276,7 +281,7 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
 
     <section aria-labelledby="build-h" id="builder-top">
       <h2 id="build-h">Build your chocolate</h2>
-      <p class="sub">Choose what you like, then add it to your order. You can add as many different ones as you want.</p>
+      <p class="sub" id="build-sub">Choose what you like, then add it to your order. You can add as many different ones as you want.</p>
       <div class="builder" id="builder"></div>
 
       <div class="bulk" id="bulk">
@@ -337,6 +342,7 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
         <p class="empty" id="empty">Nothing added yet. Build a chocolate and tap Add to order.</p>
         <ul class="lines" id="lines" aria-live="polite"></ul>
         <div class="total" id="total-row" hidden><span>Items total</span><span class="amt" id="total">₹0</span></div>
+        <p class="cz-note" id="cz-total-note" hidden>Customization is extra, from <span id="cz-from"></span>. We'll confirm the exact amount with you on WhatsApp.</p>
         <p class="err" id="cart-err" role="alert" hidden></p>
 
         <div id="send-area">
@@ -395,10 +401,13 @@ const STRUCTS = [
   { id: "two",    label: "2 layers" },
   { id: "three",  label: "3 layers" }
 ];
-const MINI_ADDINS = ADDINS.filter(a => a.mini !== null);
+const weightOf = id => WEIGHTS.find(w => w.id === id);
+const barPrice = (w, addinId) => (w.prices[addinId] === undefined ? null : w.prices[addinId]);
+const barSize = grams => { const w = Math.round(124 + (grams - 100) * 0.44); return { w, h: Math.round(w * 0.61) }; };
 
-const st = { kind: "bar", structure: "single", flavor: FLAVOURS[0].id, pair: PAIRS[0].id, addIn: ADDINS[0].id, cz: false, qty: 1 };
-const cart = [];            // { key, kind, title, detail, unit, qty, no, customText }
+const st = { kind: "bar", weight: WEIGHTS[0].id, structure: "single", flavor: FLAVOURS[0].id, pair: PAIRS[0].id, addIn: ADDINS[0].id, cz: false, qty: 1 };
+const cart = [];            // { key, kind, title, detail, unit, qty, customText }
+let touched = false;        // has the customer changed the builder since the last Add?
 let lastMessage = "";
 
 /* ---------- Build the builder ---------- */
@@ -430,6 +439,8 @@ function buildBuilder() {
       </div>
     </fieldset>
 
+    <fieldset class="bgroup" id="g-weight"><legend>Weight</legend>${chips("weight", WEIGHTS)}</fieldset>
+
     <fieldset class="bgroup" id="g-struct"><legend>Layers</legend>${chips("structure", STRUCTS)}</fieldset>
 
     <fieldset class="bgroup" id="g-flavor"><legend>Which chocolate?</legend>${chips("flavor", FLAVOURS)}</fieldset>
@@ -450,7 +461,7 @@ function buildBuilder() {
       <div class="cz-box" id="cz-box" hidden>
         <label for="cz-text">Name or message to print on the bar</label>
         <input type="text" id="cz-text" maxlength="30" placeholder="e.g. Happy Birthday Asha" autocomplete="off">
-        <p class="hint">For logos, special designs or anything else, <a href="#bulk">contact us</a>.</p>
+        <p class="hint">Customization starts from ${fmt(PRICES.customizeFrom)}. We'll confirm the exact charge with you on WhatsApp. For logos or special designs, <a href="#bulk">contact us</a>.</p>
         <p class="err" id="cz-err" role="alert" hidden></p>
       </div>
     </fieldset>
@@ -461,6 +472,7 @@ function buildBuilder() {
         <div class="t" id="pv-title"></div>
         <div class="d" id="pv-detail"></div>
         <div class="p" id="pv-price"></div>
+        <div class="n" id="pv-note" hidden></div>
       </div>
     </div>
 
@@ -478,43 +490,37 @@ function buildBuilder() {
 /* ---------- Work out the chocolate currently selected ---------- */
 function compute() {
   const a = addinOf(st.addIn);
-  let layers, choc, idx, unit, no;
+  let layers, choc, unit;
   if (st.kind === "mini") {
     layers = [st.flavor];
     choc = flavour(st.flavor).label;
     unit = PRICES.mini + a.mini;
-    no = 1 + ADDINS.length * (FLAVOURS.length + PAIRS.length + 1)
-           + MINI_ADDINS.findIndex(x => x.id === a.id) * FLAVOURS.length
-           + FLAVOURS.findIndex(f => f.id === st.flavor);
     return { kind: "mini", key: ["mini", st.flavor, a.id].join("|"), title: typeOf("mini").title,
-             detail: choc + " \u00b7 " + a.label, unit, no, layers, addIn: a.id, customText: "" };
+             detail: choc + " \u00b7 " + a.label, unit, layers, addIn: a.id, customText: "", grams: 10 };
   }
+  const w = weightOf(st.weight);
   const pairIdx = PAIRS.findIndex(p => p.id === st.pair);
+  unit = barPrice(w, a.id);
   if (st.structure === "single") {
     layers = [st.flavor]; choc = flavour(st.flavor).label;
-    idx = FLAVOURS.findIndex(f => f.id === st.flavor); unit = PRICES.bar;
   } else if (st.structure === "two") {
-    layers = PAIRS[pairIdx].ids; choc = PAIRS[pairIdx].label + " (2 layers)";
-    idx = FLAVOURS.length + pairIdx; unit = PRICES.bar + PRICES.twoLayers;
+    layers = PAIRS[pairIdx].ids; choc = PAIRS[pairIdx].label + " (2 layers)"; unit += PRICES.twoLayers;
   } else {
-    layers = THREE.ids; choc = THREE.label + " (3 layers)";
-    idx = FLAVOURS.length + PAIRS.length; unit = PRICES.bar + PRICES.threeLayers;
+    layers = THREE.ids; choc = THREE.label + " (3 layers)"; unit += PRICES.threeLayers;
   }
-  unit += a.bar;
   const text = st.cz ? $("#cz-text").value.trim() : "";
-  if (st.cz) unit += PRICES.customize;
-  no = 1 + ADDINS.findIndex(x => x.id === a.id) * (FLAVOURS.length + PAIRS.length + 1) + idx;
-  return { kind: "bar", key: ["bar", st.structure, layers.join("+"), a.id, text.toLowerCase()].join("|"), title: typeOf("bar").title,
-           detail: choc + " \u00b7 " + a.label, unit, no, layers, addIn: a.id, customText: text };
+  return { kind: "bar", key: ["bar", w.id, st.structure, layers.join("+"), a.id, text.toLowerCase()].join("|"), title: typeOf("bar").title,
+           detail: w.label + " \u00b7 " + choc + " \u00b7 " + a.label, unit, layers, addIn: a.id, customText: text, grams: w.grams };
 }
 
 /* ---------- Keep the builder screen in step with the choices ---------- */
 function syncBuilder() {
   if (st.kind === "mini" && addinOf(st.addIn).mini === null) st.addIn = ADDINS[0].id;
-  const map = { kind: st.kind, structure: st.structure, flavor: st.flavor, pair: st.pair, addin: st.addIn };
+  const map = { kind: st.kind, weight: st.weight, structure: st.structure, flavor: st.flavor, pair: st.pair, addin: st.addIn };
   $$('#builder input[type=radio]').forEach(r => { r.checked = map[r.name] === r.value; });
 
   const bar = st.kind === "bar", mini = st.kind === "mini";
+  $("#g-weight").hidden = !bar;
   $("#g-struct").hidden = !bar;
   $("#g-flavor").hidden = !(mini || (bar && st.structure === "single"));
   $("#g-pair").hidden   = !(bar && st.structure === "two");
@@ -522,10 +528,20 @@ function syncBuilder() {
   $("#g-cz").hidden     = !bar;
   $("#cz-on").checked   = st.cz;
   $("#cz-box").hidden   = !(bar && st.cz);
-  $("#g-cz .x").textContent = "+" + fmt(PRICES.customize);
+  $("#g-cz .x").textContent = "from " + fmt(PRICES.customizeFrom);
 
+  const w = weightOf(st.weight), w100 = WEIGHTS[0], plainKey = ADDINS[0].id;
+  $$("#g-weight .chip").forEach(l => {
+    const o = weightOf(l.dataset.opt), p = barPrice(o, st.addIn);
+    const save = p === null ? 0 : (o.grams / w100.grams) * barPrice(w100, st.addIn) - p;
+    const bits = [];
+    if (o.best) bits.push("Best value");
+    if (save > 0) bits.push("Save " + fmt(save));
+    $(".x", l).textContent = bits.join(" \u00b7 ");
+  });
   $$("#g-addin .chip").forEach(l => {
-    const o = addinOf(l.dataset.opt), v = mini ? o.mini : o.bar;
+    const o = addinOf(l.dataset.opt);
+    const v = mini ? o.mini : (barPrice(w, o.id) === null ? null : barPrice(w, o.id) - barPrice(w, plainKey));
     l.hidden = v === null;
     $(".x", l).textContent = v > 0 ? "+" + fmt(v) : "";
   });
@@ -539,10 +555,14 @@ function syncBuilder() {
   const len = (c.customText || "Your name").length;
   const label = bar && st.cz
     ? `<div class="nametext" style="font-size:${len > 16 ? 13 : len > 9 ? 16 : 20}px">${esc(c.customText || "Your name")}</div>` : "";
-  $("#stage").innerHTML = `<div class="choc ${c.kind}">${c.layers.map(id => `<div class="layer" style="background:${flavour(id).color}"></div>`).join("")}${c.addIn !== "plain" ? `<div class="bits ${c.addIn}"></div>` : ""}${label}</div>`;
+  const sz = c.kind === "bar" ? barSize(c.grams) : null;
+  $("#stage").innerHTML = `<div class="choc ${c.kind}"${sz ? ` style="width:${sz.w}px;height:${sz.h}px"` : ""}>${c.layers.map(id => `<div class="layer" style="background:${flavour(id).color}"></div>`).join("")}${c.addIn !== "plain" ? `<div class="bits ${c.addIn}"></div>` : ""}${label}</div>`;
   $("#pv-detail").textContent = c.detail + (c.customText ? " \u00b7 Printed: " + c.customText : "");
   $("#pv-title").textContent = c.title;
   $("#pv-price").textContent = fmt(c.unit) + " each";
+  const pn = $("#pv-note");
+  pn.hidden = !(bar && st.cz);
+  pn.textContent = "+ customization, from " + fmt(PRICES.customizeFrom) + " (confirmed on WhatsApp)";
   $("#add-btn").textContent = "Add to order \u00b7 " + fmt(c.unit * st.qty);
   $("#bq-val").textContent = st.qty;
   $("#bq-dec").disabled = st.qty <= 1;
@@ -551,6 +571,7 @@ function syncBuilder() {
 
 $("#builder").addEventListener("change", e => {
   const t = e.target;
+  touched = true;
   if (t.id === "cz-on") {
     st.cz = t.checked; $("#added").textContent = ""; syncBuilder();
     if (st.cz) $("#cz-text").focus();
@@ -558,6 +579,7 @@ $("#builder").addEventListener("change", e => {
   }
   if (t.type !== "radio") return;
   if (t.name === "kind") st.kind = t.value;
+  if (t.name === "weight") st.weight = t.value;
   if (t.name === "structure") st.structure = t.value;
   if (t.name === "flavor") st.flavor = t.value;
   if (t.name === "pair") st.pair = t.value;
@@ -572,8 +594,8 @@ $("#builder").addEventListener("input", e => {
   syncBuilder();
 });
 $("#builder").addEventListener("click", e => {
-  if (e.target.closest("#bq-dec")) { st.qty = Math.max(1, st.qty - 1); syncBuilder(); }
-  if (e.target.closest("#bq-inc")) { st.qty = Math.min(MAX_QTY, st.qty + 1); syncBuilder(); }
+  if (e.target.closest("#bq-dec")) { touched = true; st.qty = Math.max(1, st.qty - 1); syncBuilder(); }
+  if (e.target.closest("#bq-inc")) { touched = true; st.qty = Math.min(MAX_QTY, st.qty + 1); syncBuilder(); }
   if (e.target.closest("#add-btn")) addToCart();
 });
 
@@ -594,7 +616,7 @@ function addToCart() {
   btn.classList.add("ok"); btn.textContent = "Added \u2713";
   clearTimeout(flashTimer);
   flashTimer = setTimeout(() => { btn.classList.remove("ok"); syncBuilder(); }, 1100);
-  st.qty = 1;
+  st.qty = 1; touched = false;
   st.cz = false; $("#cz-text").value = "";
   syncBuilder();
   btn.classList.add("ok"); btn.textContent = "Added \u2713";
@@ -610,7 +632,7 @@ function renderCart(focus) {
     <li>
       <div class="ln">
         <div class="t">${esc(l.title)}</div>
-        <div class="d">${esc(l.detail)}${l.customText ? `<br>Printed: <b>${esc(l.customText)}</b>` : ""}</div>
+        <div class="d">${esc(l.detail)}${l.customText ? `<br>Printed: <b>${esc(l.customText)}</b><br>Customization extra, from ${fmt(PRICES.customizeFrom)}` : ""}</div>
       </div>
       <div class="rt">
         <div class="mstp">
@@ -626,6 +648,8 @@ function renderCart(focus) {
   $("#empty").hidden = cart.length > 0;
   $("#total-row").hidden = cart.length === 0;
   $("#total").textContent = fmt(total);
+  $("#cz-total-note").hidden = !cart.some(l => l.customText);
+  $("#cz-from").textContent = fmt(PRICES.customizeFrom);
   if (cart.length) $("#cart-err").hidden = true;
 
   $("#bar").hidden = count === 0 || !!$("#done:not([hidden])");
@@ -633,6 +657,10 @@ function renderCart(focus) {
   $("#bar-count").textContent = count + (count === 1 ? " item" : " items");
   $("#bar-total").textContent = fmt(total);
 }
+
+$("#cart-err").addEventListener("click", e => {
+  if (e.target.closest("#quick-add")) addToCart();
+});
 
 $("#lines").addEventListener("click", e => {
   const b = e.target.closest("button[data-act]");
@@ -685,7 +713,18 @@ function validate() {
   ["#name-err", "#phone-err", "#address-err", "#date-err", "#cart-err"].forEach(hide);
 
   const empty = cart.length === 0;
-  if (empty) bad(null, "#cart-err", "Add at least one chocolate to your order.");
+  let quick = false;
+  if (empty) {
+    const c = compute();
+    quick = touched && !(st.kind === "bar" && st.cz && !c.customText);
+    const el = $("#cart-err");
+    el.innerHTML = quick
+      ? `You haven't added your chocolate to the order yet. <button type="button" class="qa" id="quick-add">Add ${st.qty} \u00d7 ${esc(c.title)}: ${esc(c.detail)} \u00b7 ${fmt(c.unit * st.qty)}</button>`
+      : `Your order is empty. Choose a chocolate and tap <b>Add to order</b>.`;
+    el.hidden = false;
+    first = first || "#cart-err";
+    const b = $("#add-btn"); b.classList.add("nudge"); setTimeout(() => b.classList.remove("nudge"), 2500);
+  }
   if ($("#name").value.trim().length < 2) bad("#name", "#name-err", "Enter your name.");
   if (!normPhone($("#phone").value)) bad("#phone", "#phone-err", "Enter a 10-digit mobile number, like 98765 43210.");
   const delivery = document.querySelector('input[name="mode"]:checked').value === "Delivery";
@@ -696,7 +735,11 @@ function validate() {
     bad("#date", "#date-err", `Please choose a date between ${prettyDate(dateMin(), false)} and ${prettyDate(dateMax(), false)}.`);
 
   if (first) {
-    if (empty) { $("#builder-top").scrollIntoView({ block: "start" }); return false; }
+    if (empty) {
+      if (quick) $("#cart-err").scrollIntoView({ block: "center" });
+      else if (!window.matchMedia("(min-width:900px)").matches) $("#builder-top").scrollIntoView({ block: "start" });
+      return false;
+    }
     const t = $(first);
     t.scrollIntoView({ block: "center" });
     if (t.matches("input,textarea")) t.focus();
@@ -721,10 +764,11 @@ function buildMessage(id) {
     `Hi Manna Chocolates, I'd like to place an order.`,
     ``,
     `*Items*`,
-    ...cart.map(l => `\u2022 ${l.qty} \u00d7 ${l.title}: ${l.detail} (#${l.no}): ${fmt(l.unit * l.qty)}`
+    ...cart.map(l => `\u2022 ${l.qty} \u00d7 ${l.title} (${l.detail}): ${fmt(l.unit * l.qty)}`
       + (l.customText ? `\n   Customize, print: *${l.customText}*` : "")),
     ``,
     `*Items total: ${fmt(total)}*`,
+    ...(cart.some(l => l.customText) ? [`(Customization extra, from ${fmt(PRICES.customizeFrom)}, to be confirmed)`] : []),
     ``,
     `*Name:* ${$("#name").value.trim()}`,
     `*Phone:* +91 ${ph.slice(0, 5)} ${ph.slice(5)}`,
@@ -777,7 +821,7 @@ $("#copy-btn").addEventListener("click", async () => {
 });
 
 $("#new-btn").addEventListener("click", () => {
-  cart.length = 0;
+  cart.length = 0; touched = false;
   $("#cz-text").value = ""; st.cz = false;
   $("#date").value = "";
   $("#added").textContent = "";
@@ -809,6 +853,8 @@ function renderContact() {
 /* ---------- Start ---------- */
 buildBuilder();
 renderContact();
+$("#build-sub").textContent = "Choose what you like, then add it to your order. Bars from " +
+  fmt(Math.min(...Object.values(WEIGHTS[0].prices))) + ", minis from " + fmt(PRICES.mini) + ".";
 try {
   const saved = JSON.parse(localStorage.getItem("manna:details") || "null");
   if (saved) {

@@ -1,7 +1,6 @@
 /* =====================================================================
    MENU.JS  -  the only file you need to edit for day-to-day changes
    ---------------------------------------------------------------------
-   ALL PRICES BELOW ARE DUMMY VALUES. Change the numbers when ready.
    Keep every comma, quote and { } exactly as it is.
    ===================================================================== */
 
@@ -21,30 +20,44 @@ const CONFIG = {
 };
 
 /* ---------------------------------------------------------------------
-   PRICES  (what a customer pays for ONE chocolate)
-   Price of a bar  = bar + layer extra (if 2 or 3 layers) + add-in extra
-                     + customize (only if the customer adds a name/message)
-   Price of a mini = mini + add-in extra
+   BAR PRICES  -  one row per weight, one number per add-in.
+   This table is the price of ONE plain-layer (single flavour) bar.
+
+   Pricing rule used for 150 g and 200 g:
+     150 g = 1.5 x the 100 g price, minus Rs 10
+     200 g = 2   x the 100 g price, minus Rs 20
+   so a bigger bar always costs a little less per gram (customers see
+   "Save Rs 10 / Rs 20") but you still earn more per order.
+
+   best:true shows a "Best value" tag on that weight.
+   --------------------------------------------------------------------- */
+const WEIGHTS = [
+  { id:"100", label:"100 g", grams:100, prices:{ plain:160, nuts:180, oats:200 } },
+  { id:"150", label:"150 g", grams:150, prices:{ plain:230, nuts:260, oats:290 } },
+  { id:"200", label:"200 g", grams:200, prices:{ plain:300, nuts:340, oats:380 }, best:true }
+];
+
+/* ---------------------------------------------------------------------
+   OTHER PRICES
    --------------------------------------------------------------------- */
 const PRICES = {
-  bar: 100,          // single-flavour bar, plain
-  mini: 20,          // 10g mini, plain
-  customize: 50,     // extra for printing a name or message on a bar
-  twoLayers: 10,     // extra for a 2-layer bar
-  threeLayers: 20    // extra for a 3-layer bar
+  mini: 20,            // 10 g mini, plain
+  twoLayers: 20,       // flat extra for a 2-layer bar (about Rs 20 per extra layer)
+  threeLayers: 40,     // flat extra for a 3-layer bar
+  customizeFrom: 50    // shown to customers as "from Rs 50"; the exact charge
+                       // is agreed with the customer on WhatsApp
 };
 
 /* ---------------------------------------------------------------------
-   ADD-INS  (extra price is added on top of the base price)
-   bar  = extra price on a bar        mini = extra price on a mini
-   mini: null  means "not offered for minis"
-   To add a new add-in, copy a line and give it a new id and label.
+   ADD-INS
+   id must match the names used in the WEIGHTS table above (plain, nuts, oats).
+   mini = extra price on a 10 g mini.  mini: null means "not offered for minis".
    Keep "plain" first.
    --------------------------------------------------------------------- */
 const ADDINS = [
-  { id:"plain", label:"Plain",         bar:0,  mini:0 },
-  { id:"nuts",  label:"Fruits & Nuts", bar:50, mini:5 },
-  { id:"oats",  label:"Oats",          bar:30, mini:null }
+  { id:"plain", label:"Plain",         mini:0 },
+  { id:"nuts",  label:"Fruits & Nuts", mini:5 },
+  { id:"oats",  label:"Oats",          mini:null }
 ];
 
 /* ---------------------------------------------------------------------
@@ -64,6 +77,6 @@ const FLAVOURS = [
    drawn picture.
    --------------------------------------------------------------------- */
 const TYPES = [
-  { id:"bar",  label:"Bar",      title:"Bar chocolate",      note:"Full-size bar, can be customized" },
-  { id:"mini", label:"Mini 10g", title:"Mini 10g chocolate", note:"Bite-size piece" }
+  { id:"bar",  label:"Bar",  title:"Bar chocolate",      note:"100 g, 150 g or 200 g. Can be customized" },
+  { id:"mini", label:"Mini", title:"Mini 10g chocolate", note:"10g bite-size piece" }
 ];
