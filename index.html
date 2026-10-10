@@ -171,6 +171,10 @@ footer a{color:var(--gold-soft);font-weight:600}
 .pv .d{font-size:14.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
 .pv .p{margin-top:8px;font-weight:700;font-size:17px}
 .pv .n{margin-top:4px;font-size:13px;color:var(--muted)}
+.qchips{margin-top:10px}
+.qbtn{min-height:44px;min-width:58px;padding:0 16px;border-radius:999px;border:1.5px solid rgba(74,37,17,.3);background:#fffdf6;font-weight:700;font-size:15px;cursor:pointer}
+.qbtn.on{background:var(--cocoa);border-color:var(--cocoa);color:var(--cream)}
+.mini-note{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:#f6e3d6;color:#7a2f18;font-size:14px;font-weight:600}
 .cz-note{margin:10px 0 0;font-size:13px;color:var(--muted)}
 .buy{display:flex;gap:12px;align-items:center}
 .stepper{display:inline-flex;align-items:center;gap:4px;background:var(--parchment);border-radius:999px;padding:3px}
@@ -342,6 +346,7 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
         <p class="empty" id="empty">Nothing added yet. Build a chocolate and tap Add to order.</p>
         <ul class="lines" id="lines" aria-live="polite"></ul>
         <div class="total" id="total-row" hidden><span>Items total</span><span class="amt" id="total">₹0</span></div>
+        <p class="mini-note" id="mini-note" role="status" hidden></p>
         <p class="cz-note" id="cz-total-note" hidden>Customization is extra, from <span id="cz-from"></span>. We'll confirm the exact amount with you on WhatsApp.</p>
         <p class="err" id="cart-err" role="alert" hidden></p>
 
@@ -381,7 +386,8 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
 
 <script src="menu.js"></script>
 <script>
-const MAX_QTY = 20;
+const MAX_QTY = 20;                       // most of one bar order line
+const maxQty = kind => (kind === "mini" ? 500 : MAX_QTY);
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const fmt = n => CONFIG.currency + n.toLocaleString("en-IN");
@@ -407,6 +413,8 @@ const barSize = grams => { const w = Math.round(124 + (grams - 100) * 0.44); ret
 
 const st = { kind: "bar", weight: WEIGHTS[0].id, structure: "single", flavor: FLAVOURS[0].id, pair: PAIRS[0].id, addIn: ADDINS[0].id, cz: false, qty: 1 };
 const cart = [];            // { key, kind, title, detail, unit, qty, customText }
+const miniCount = () => cart.filter(l => l.kind === "mini").reduce((n, l) => n + l.qty, 0);
+const miniDefault = () => Math.max(1, PRICES.miniMinimum - miniCount());   // how many more minis are needed
 let touched = false;        // has the customer changed the builder since the last Add?
 let lastMessage = "";
 
@@ -465,6 +473,12 @@ function buildBuilder() {
         <p class="err" id="cz-err" role="alert" hidden></p>
       </div>
     </fieldset>
+
+    <div class="bgroup" id="g-mini">
+      <span class="lg">How many minis?</span>
+      <p class="note">Minimum order is <b>${PRICES.miniMinimum} mini pieces</b>. You can mix any flavours and add-ins.</p>
+      <div class="chips qchips" id="quick-qty">${[1, 2, 3, 5].map(k => `<button type="button" class="qbtn" data-q="${PRICES.miniMinimum * k}">${PRICES.miniMinimum * k}</button>`).join("")}</div>
+    </div>
 
     <div class="preview" aria-live="polite">
       <div class="stage" id="stage"></div>
@@ -525,6 +539,8 @@ function syncBuilder() {
   $("#g-flavor").hidden = !(mini || (bar && st.structure === "single"));
   $("#g-pair").hidden   = !(bar && st.structure === "two");
   $("#g-three").hidden  = !(bar && st.structure === "three");
+  $("#g-mini").hidden   = !mini;
+  $$("#quick-qty .qbtn").forEach(bn => bn.classList.toggle("on", +bn.dataset.q === st.qty));
   $("#g-cz").hidden     = !bar;
   $("#cz-on").checked   = st.cz;
   $("#cz-box").hidden   = !(bar && st.cz);
@@ -566,7 +582,7 @@ function syncBuilder() {
   $("#add-btn").textContent = "Add to order \u00b7 " + fmt(c.unit * st.qty);
   $("#bq-val").textContent = st.qty;
   $("#bq-dec").disabled = st.qty <= 1;
-  $("#bq-inc").disabled = st.qty >= MAX_QTY;
+  $("#bq-inc").disabled = st.qty >= maxQty(st.kind);
 }
 
 $("#builder").addEventListener("change", e => {
@@ -578,7 +594,7 @@ $("#builder").addEventListener("change", e => {
     return;
   }
   if (t.type !== "radio") return;
-  if (t.name === "kind") st.kind = t.value;
+  if (t.name === "kind") { st.kind = t.value; st.qty = st.kind === "mini" ? miniDefault() : 1; }
   if (t.name === "weight") st.weight = t.value;
   if (t.name === "structure") st.structure = t.value;
   if (t.name === "flavor") st.flavor = t.value;
@@ -594,8 +610,10 @@ $("#builder").addEventListener("input", e => {
   syncBuilder();
 });
 $("#builder").addEventListener("click", e => {
+  const qb = e.target.closest(".qbtn");
+  if (qb) { touched = true; st.qty = Math.min(maxQty(st.kind), +qb.dataset.q); syncBuilder(); }
   if (e.target.closest("#bq-dec")) { touched = true; st.qty = Math.max(1, st.qty - 1); syncBuilder(); }
-  if (e.target.closest("#bq-inc")) { touched = true; st.qty = Math.min(MAX_QTY, st.qty + 1); syncBuilder(); }
+  if (e.target.closest("#bq-inc")) { touched = true; st.qty = Math.min(maxQty(st.kind), st.qty + 1); syncBuilder(); }
   if (e.target.closest("#add-btn")) addToCart();
 });
 
@@ -608,7 +626,7 @@ function addToCart() {
     return;
   }
   const have = cart.find(l => l.key === c.key);
-  if (have) have.qty = Math.min(MAX_QTY, have.qty + st.qty);
+  if (have) have.qty = Math.min(maxQty(c.kind), have.qty + st.qty);
   else cart.push({ ...c, qty: st.qty });
 
   $("#added").textContent = "Added: " + st.qty + " \u00d7 " + c.title + ", " + c.detail + (c.customText ? " (printed: " + c.customText + ")" : "") + ".";
@@ -616,7 +634,7 @@ function addToCart() {
   btn.classList.add("ok"); btn.textContent = "Added \u2713";
   clearTimeout(flashTimer);
   flashTimer = setTimeout(() => { btn.classList.remove("ok"); syncBuilder(); }, 1100);
-  st.qty = 1; touched = false;
+  st.qty = st.kind === "mini" ? miniDefault() : 1; touched = false;
   st.cz = false; $("#cz-text").value = "";
   syncBuilder();
   btn.classList.add("ok"); btn.textContent = "Added \u2713";
@@ -638,7 +656,7 @@ function renderCart(focus) {
         <div class="mstp">
           <button type="button" data-act="dec" data-i="${i}" aria-label="One less ${esc(l.title)}">&minus;</button>
           <span class="q">${l.qty}</span>
-          <button type="button" data-act="inc" data-i="${i}" aria-label="One more ${esc(l.title)}" ${l.qty >= MAX_QTY ? "disabled" : ""}>+</button>
+          <button type="button" data-act="inc" data-i="${i}" aria-label="One more ${esc(l.title)}" ${l.qty >= maxQty(l.kind) ? "disabled" : ""}>+</button>
         </div>
         <div class="amt">${fmt(l.unit * l.qty)}</div>
       </div>
@@ -649,6 +667,9 @@ function renderCart(focus) {
   $("#total-row").hidden = cart.length === 0;
   $("#total").textContent = fmt(total);
   $("#cz-total-note").hidden = !cart.some(l => l.customText);
+  const minis = miniCount(), mn = $("#mini-note");
+  mn.hidden = !(minis > 0 && minis < PRICES.miniMinimum);
+  mn.textContent = `Minis have a minimum order of ${PRICES.miniMinimum} pieces. You have ${minis}, add ${PRICES.miniMinimum - minis} more.`;
   $("#cz-from").textContent = fmt(PRICES.customizeFrom);
   if (cart.length) $("#cart-err").hidden = true;
 
@@ -666,7 +687,7 @@ $("#lines").addEventListener("click", e => {
   const b = e.target.closest("button[data-act]");
   if (!b) return;
   const i = +b.dataset.i, l = cart[i];
-  if (b.dataset.act === "inc") l.qty = Math.min(MAX_QTY, l.qty + 1);
+  if (b.dataset.act === "inc") l.qty = Math.min(maxQty(l.kind), l.qty + 1);
   if (b.dataset.act === "dec") l.qty -= 1;
   if (l.qty <= 0) { cart.splice(i, 1); renderCart(); return; }
   renderCart({ act: b.dataset.act, i });
@@ -729,6 +750,8 @@ function validate() {
   if (!normPhone($("#phone").value)) bad("#phone", "#phone-err", "Enter a 10-digit mobile number, like 98765 43210.");
   const delivery = document.querySelector('input[name="mode"]:checked').value === "Delivery";
   if (delivery && $("#address").value.trim().length < 8) bad("#address", "#address-err", "Enter your full delivery address.");
+  const minis = miniCount();
+  if (!empty && minis > 0 && minis < PRICES.miniMinimum) first = first || "#mini-note";   // the red note above the Send button already explains it
   const dv = $("#date").value;
   if (!dv) bad("#date", "#date-err", "Choose your preferred date.");
   else if (dv < dateMin() || dv > dateMax())
@@ -821,7 +844,7 @@ $("#copy-btn").addEventListener("click", async () => {
 });
 
 $("#new-btn").addEventListener("click", () => {
-  cart.length = 0; touched = false;
+  cart.length = 0; touched = false; st.qty = st.kind === "mini" ? PRICES.miniMinimum : 1;
   $("#cz-text").value = ""; st.cz = false;
   $("#date").value = "";
   $("#added").textContent = "";

@@ -41,7 +41,8 @@ const WEIGHTS = [
    OTHER PRICES
    --------------------------------------------------------------------- */
 const PRICES = {
-  mini: 20,            // 10 g mini, plain
+  mini: 12,            // 10 g mini, plain (Fruits & Nuts adds 5 more = Rs 17)
+  miniMinimum: 10,     // smallest number of minis per order (all flavours together)
   twoLayers: 20,       // flat extra for a 2-layer bar (about Rs 20 per extra layer)
   threeLayers: 40,     // flat extra for a 3-layer bar
   customizeFrom: 50    // shown to customers as "from Rs 50"; the exact charge
