@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Manna Chocolates | Order online</title>
-<meta name="description" content="Handmade chocolates from Manna Chocolates. Choose your chocolates and send your order on WhatsApp. We confirm first, then you pay.">
+<meta name="description" content="Build your own chocolate: bars, minis or a custom name. Send your order on WhatsApp. We confirm first, then you pay.">
 <meta name="theme-color" content="#25140c">
 <meta property="og:title" content="Manna Chocolates | A taste from above">
-<meta property="og:description" content="Choose your chocolates and send your order on WhatsApp.">
+<meta property="og:description" content="Build your chocolate and send your order on WhatsApp.">
 <meta property="og:image" content="logo.png">
 <link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,7 +22,6 @@
   --paper:#fffaf0;
   --parchment:#efe3c8;
   --cocoa:#4a2511;
-  --milk:#8a4b2a;
   --gold:#c79a3f;
   --gold-soft:#e2bf72;
   --ink:#2a1a10;
@@ -34,16 +33,14 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;background:var(--cream);color:var(--ink);
-  font-family:var(--body);font-size:16px;line-height:1.5;
-}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
 body.has-bar{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 img{max-width:100%;display:block}
 button,input,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 [hidden]{display:none !important}
-.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+legend{padding:0}
 
 /* ---------- Hero ---------- */
 .hero{
@@ -53,141 +50,168 @@ button,input,textarea{font:inherit;color:inherit}
     radial-gradient(ellipse 62% 48% at 50% 22%, rgba(226,191,114,.26), transparent 70%),
     linear-gradient(180deg,var(--espresso-2) 0%,var(--espresso) 100%);
 }
-.hero::after{
-  content:"";position:absolute;left:0;right:0;bottom:-1px;height:30px;
-  background:var(--cream);border-radius:30px 30px 0 0;
-}
-.logo{
-  width:min(250px,64vw);aspect-ratio:1;margin:0 auto 22px;border-radius:50%;
-  filter:drop-shadow(0 14px 34px rgba(0,0,0,.5));
-}
-.hero h1{
-  font-family:var(--display);font-weight:400;
-  font-size:clamp(26px,6.4vw,38px);line-height:1.15;margin:0 auto 10px;max-width:20ch;
-}
-.hero p.lede{margin:0 auto;max-width:44ch;color:rgba(248,241,225,.82);font-size:16px}
-.steps{
-  list-style:none;margin:26px auto 0;padding:0;display:flex;justify-content:center;gap:10px;
-  max-width:460px;
-}
-.steps li{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;
-  font-size:14px;color:var(--cream);
-}
-.steps .n{
-  width:30px;height:30px;border-radius:50%;border:1px solid var(--gold);
-  display:grid;place-items:center;font-family:var(--display);color:var(--gold-soft);font-size:15px;
-}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:30px;background:var(--cream);border-radius:30px 30px 0 0}
+.logo{width:min(250px,64vw);aspect-ratio:1;margin:0 auto 22px;border-radius:50%;filter:drop-shadow(0 14px 34px rgba(0,0,0,.5))}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(26px,6.4vw,38px);line-height:1.15;margin:0 auto 10px;max-width:20ch}
+.hero p.lede{margin:0 auto;max-width:44ch;color:rgba(248,241,225,.82)}
+.steps{list-style:none;margin:26px auto 0;padding:0;display:flex;justify-content:center;gap:10px;max-width:460px}
+.steps li{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:14px}
+.steps .n{width:30px;height:30px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;font-family:var(--display);color:var(--gold-soft);font-size:15px}
 
 /* ---------- Layout ---------- */
 .wrap{max-width:1080px;margin:0 auto;padding:6px 18px 40px}
-.layout{display:block}
 @media(min-width:900px){
-  .layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(340px,1fr);gap:44px;align-items:start}
+  .layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(340px,1fr);gap:44px;align-items:start}
   .panel{position:sticky;top:20px}
-  .bar{display:none !important}
+  .cartbar{display:none !important}
   body.has-bar{padding-bottom:0}
 }
-
 h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.2;margin:18px 0 6px;color:var(--cocoa)}
 .sub{margin:0 0 6px;color:var(--muted);font-size:15px}
-h3.cat{
-  font-family:var(--display);font-weight:400;font-size:19px;color:var(--cocoa);
-  margin:28px 0 4px;display:flex;align-items:center;gap:12px;
-}
-h3.cat::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
 
-/* ---------- Menu items ---------- */
-.item{
-  display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:14px;align-items:center;
-  padding:14px 0;border-bottom:1px solid var(--line);
+/* ---------- Chocolate drawing ---------- */
+.choc{
+  position:relative;display:flex;flex-direction:column;overflow:hidden;border-radius:10px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.28),inset 0 -3px 0 rgba(0,0,0,.22),0 10px 18px -10px rgba(40,20,5,.7);
+  --s:1;
 }
-.swatch{
-  width:50px;height:50px;border-radius:11px;background-color:var(--c,#4a2511);
-  background-image:
-    linear-gradient(rgba(0,0,0,.22) 1.5px,transparent 1.5px),
-    linear-gradient(90deg,rgba(0,0,0,.22) 1.5px,transparent 1.5px);
-  background-size:50% 50%;background-position:center;
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.22),inset 0 -2px 0 rgba(0,0,0,.18);
+.choc.bar{width:150px;height:92px}
+.choc.mini{width:58px;height:58px;--s:.45}
+.choc.sm.bar{width:64px;height:40px;border-radius:7px;--s:.4}
+.choc.sm.mini{width:32px;height:32px;border-radius:6px;--s:.25}
+.choc .layer{flex:1}
+.choc::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,0,0,.24) 2px,transparent 2px),linear-gradient(90deg,rgba(0,0,0,.24) 2px,transparent 2px);
+  background-size:33.333% 33.333%;
 }
-.swatch[data-type="dark"]{--c:#4a2511}
-.swatch[data-type="milk"]{--c:#8a4b2a}
-.swatch[data-type="caramel"]{--c:#b4742f}
-.swatch[data-type="white"]{--c:#eadfc2}
-.swatch[data-type="mix"]{background-color:#8a4b2a;background-image:
-    linear-gradient(rgba(0,0,0,.2) 1.5px,transparent 1.5px),
-    linear-gradient(90deg,#4a2511 0 33.3%,#8a4b2a 33.3% 66.6%,#eadfc2 66.6% 100%);
-  background-size:100% 50%,100% 100%}
-.swatch[data-type="white"]{background-image:
-    linear-gradient(rgba(120,90,40,.25) 1.5px,transparent 1.5px),
-    linear-gradient(90deg,rgba(120,90,40,.25) 1.5px,transparent 1.5px)}
-.item.has-photo{grid-template-columns:78px minmax(0,1fr) auto}
-.photo{width:78px;height:78px;border-radius:12px;object-fit:cover;background:var(--parchment);box-shadow:0 2px 8px rgba(74,37,17,.18)}
-.custom-field{grid-column:1/-1;background:var(--parchment);padding:12px 14px 14px;border-radius:12px}
-.custom-field label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
-.item .name{font-family:var(--display);font-size:18px;line-height:1.25;color:var(--cocoa)}
-.item .desc{font-size:14px;color:var(--muted);margin-top:2px}
-.item .price{font-weight:600;font-size:15px;margin-top:4px}
-.act{min-width:96px;display:flex;justify-content:flex-end}
-.add{
-  min-height:42px;padding:0 20px;border-radius:999px;cursor:pointer;
-  background:transparent;border:1.5px solid var(--cocoa);color:var(--cocoa);font-weight:600;
+.choc.mini::after{background-size:50% 50%}
+.choc.sm::after{background-image:linear-gradient(rgba(0,0,0,.24) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.24) 1px,transparent 1px)}
+.choc.custom::after{display:none}
+.choc .nametext{
+  position:absolute;inset:0;display:grid;place-items:center;padding:6px 10px;text-align:center;
+  font-family:var(--display);font-size:20px;line-height:1.1;color:var(--gold-soft);
+  text-shadow:0 1px 0 rgba(0,0,0,.6),0 0 8px rgba(226,191,114,.35);overflow:hidden;overflow-wrap:anywhere;
 }
-.add:hover{background:var(--cocoa);color:var(--cream)}
+.bits{position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat}
+.bits.nuts{background-image:
+  radial-gradient(circle calc(var(--s)*5px) at 18% 22%,#d9a441 96%,transparent),
+  radial-gradient(circle calc(var(--s)*4px) at 48% 70%,#b5472b 96%,transparent),
+  radial-gradient(circle calc(var(--s)*5px) at 72% 28%,#7a4a22 96%,transparent),
+  radial-gradient(circle calc(var(--s)*4px) at 88% 64%,#d9a441 96%,transparent),
+  radial-gradient(circle calc(var(--s)*4px) at 34% 46%,#e8c777 96%,transparent),
+  radial-gradient(circle calc(var(--s)*3.5px) at 60% 50%,#a8452a 96%,transparent),
+  radial-gradient(circle calc(var(--s)*4px) at 12% 76%,#7a4a22 96%,transparent),
+  radial-gradient(circle calc(var(--s)*3.5px) at 82% 12%,#b5472b 96%,transparent),
+  radial-gradient(circle calc(var(--s)*4px) at 54% 88%,#d9a441 96%,transparent)}
+.bits.oats{background-image:
+  radial-gradient(ellipse calc(var(--s)*5px) calc(var(--s)*2.5px) at 16% 20%,#efe0b0 96%,transparent),
+  radial-gradient(ellipse calc(var(--s)*5px) calc(var(--s)*2.5px) at 44% 30%,#e8d49c 96%,transparent),
+  radial-gradient(ellipse calc(var(--s)*5px) calc(var(--s)*2.5px) at 76% 18%,#efe0b0 96%,transparent),
+  radial-gradient(ellipse calc(var(--s)*5px) calc(var(--s)*2.5px) at 28% 52%,#e8d49c 96%,transparent),
+  radial-gradient(ellipse calc(var(--s)*5px) calc(var(--s)*2.5px) at 62% 55%,#efe0b0 96%,transparent),
+  radial-gradient(ellipse calc(var(--s)*5px) calc(var(--s)*2.5px) at 88% 48%,#e8d49c 96%,transparent),
+  radial-gradient(ellipse calc(var(--s)*5px) calc(var(--s)*2.5px) at 14% 80%,#efe0b0 96%,transparent),
+  radial-gradient(ellipse calc(var(--s)*5px) calc(var(--s)*2.5px) at 48% 82%,#e8d49c 96%,transparent),
+  radial-gradient(ellipse calc(var(--s)*5px) calc(var(--s)*2.5px) at 80% 84%,#efe0b0 96%,transparent)}
+
+/* ---------- Builder ---------- */
+.builder{margin-top:16px;display:grid;gap:22px}
+.bgroup>legend,.bgroup>.lg{display:block;font-weight:700;font-size:14px;letter-spacing:.02em;margin-bottom:10px;color:var(--cocoa)}
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tcard{position:relative}
+.tcard input,.chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.tcard .box{
+  display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;
+  padding:14px 8px 12px;border-radius:14px;text-align:center;
+  border:1.5px solid rgba(74,37,17,.25);background:#fffdf6;
+}
+.tcard input:checked + .box{border-color:var(--gold);background:var(--paper);box-shadow:0 0 0 3px rgba(199,154,63,.38)}
+.tcard input:focus-visible + .box{outline:3px solid var(--gold);outline-offset:2px}
+.tcard .lbl{font-family:var(--display);font-size:17px;color:var(--cocoa);line-height:1.15}
+.tcard .nt{font-size:12.5px;color:var(--muted);line-height:1.25}
+.art{position:relative;height:44px;width:72px;display:grid;place-items:center}
+.art .timg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:8px}
+.art .aa{
+  width:64px;height:40px;border-radius:7px;display:grid;place-items:center;
+  border:1.5px dashed var(--gold);background:var(--parchment);color:var(--cocoa);font-family:var(--display);font-size:19px;
+}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip span{
+  display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;
+  border:1.5px solid rgba(74,37,17,.3);background:#fffdf6;font-weight:600;font-size:15px;
+}
+.chip input:checked + span{background:var(--cocoa);border-color:var(--cocoa);color:var(--cream)}
+.chip input:focus-visible + span{outline:3px solid var(--gold);outline-offset:2px}
+.chip .x{font-weight:500;opacity:.78;font-size:13px}
+.dot{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.35);display:inline-block}
+.note{margin:0;padding:12px 14px;background:var(--parchment);border-radius:12px;font-size:14.5px;color:var(--ink)}
+
+.preview{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;padding:16px;border-radius:16px;background:var(--parchment);
+}
+.stage{
+  flex:0 0 168px;height:112px;display:grid;place-items:center;border-radius:12px;
+  background:radial-gradient(circle at 50% 28%,rgba(255,255,255,.6),transparent 72%);
+}
+.pv{flex:1;min-width:150px}
+.pv .t{font-family:var(--display);font-size:20px;line-height:1.2;color:var(--cocoa)}
+.pv .d{font-size:14.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+.pv .p{margin-top:8px;font-weight:700;font-size:17px}
+.buy{display:flex;gap:12px;align-items:center}
 .stepper{display:inline-flex;align-items:center;gap:4px;background:var(--parchment);border-radius:999px;padding:3px}
-.stepper button{
-  width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;
-  background:var(--cocoa);color:var(--cream);font-size:20px;line-height:1;
-}
+.stepper button{width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;background:var(--cocoa);color:var(--cream);font-size:20px;line-height:1}
 .stepper button:disabled{opacity:.35;cursor:not-allowed}
-.stepper .qty{min-width:28px;text-align:center;font-weight:700}
+.stepper .qty{min-width:30px;text-align:center;font-weight:700}
+.addbtn{
+  flex:1;min-height:52px;border:0;border-radius:12px;cursor:pointer;
+  background:var(--espresso);color:var(--cream);font-weight:700;font-size:16px;
+}
+.addbtn:hover{background:var(--espresso-2)}
+.addbtn.ok{background:#2f5a35}
+.added{margin:0;font-size:14px;color:var(--muted);min-height:1.4em}
 
 /* ---------- Order panel ---------- */
-.panel{
-  background:var(--paper);border:1px solid var(--line);border-radius:18px;
-  padding:22px 20px;margin-top:26px;
-  box-shadow:0 18px 40px -26px rgba(74,37,17,.45);
-}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px 20px;margin-top:26px;box-shadow:0 18px 40px -26px rgba(74,37,17,.45)}
 .panel h2{margin-top:0}
 .panel h2.second{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
 .field{margin-top:14px}
-.field label,.field legend{display:block;font-weight:600;font-size:14px;margin-bottom:6px;padding:0}
+.field label,.field legend{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
 .field .opt{font-weight:400;color:var(--muted)}
-fieldset.field{border:0;margin:14px 0 0;padding:0;min-width:0}
+fieldset.field{margin:14px 0 0}
 input[type=text],input[type=tel],textarea{
-  width:100%;padding:12px 14px;font-size:16px;background:#fffdf6;
-  border:1px solid rgba(74,37,17,.3);border-radius:10px;
+  width:100%;padding:12px 14px;font-size:16px;background:#fffdf6;border:1px solid rgba(74,37,17,.3);border-radius:10px;
 }
 textarea{resize:vertical;min-height:84px}
 input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(199,154,63,.32)}
 .phone{display:flex}
-.phone span{
-  display:grid;place-items:center;padding:0 12px;background:var(--parchment);
-  border:1px solid rgba(74,37,17,.3);border-right:0;border-radius:10px 0 0 10px;font-weight:600;
-}
+.phone span{display:grid;place-items:center;padding:0 12px;background:var(--parchment);border:1px solid rgba(74,37,17,.3);border-right:0;border-radius:10px 0 0 10px;font-weight:600}
 .phone input{border-radius:0 10px 10px 0}
 .err{color:var(--danger);font-size:13px;margin:6px 0 0}
 .invalid{border-color:var(--danger) !important}
-
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .seg label{margin:0;position:relative}
-.seg input{position:absolute;opacity:0;inset:0;cursor:pointer}
-.seg span{
-  display:block;text-align:center;padding:11px 8px;border-radius:10px;font-weight:600;
-  border:1px solid rgba(74,37,17,.3);background:#fffdf6;
-}
+.seg input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.seg span{display:block;text-align:center;padding:11px 8px;border-radius:10px;font-weight:600;border:1px solid rgba(74,37,17,.3);background:#fffdf6}
 .seg input:checked + span{background:var(--cocoa);border-color:var(--cocoa);color:var(--cream)}
 .seg input:focus-visible + span{outline:3px solid var(--gold);outline-offset:2px}
 .hint{font-size:13px;color:var(--muted);margin:8px 0 0}
 
 .lines{list-style:none;margin:8px 0 0;padding:0}
-.lines li{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15px}
-.lines .q{color:var(--muted);white-space:nowrap}
+.lines li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.ln .t{font-weight:600;font-size:15px}
+.ln .d{font-size:13.5px;color:var(--muted);overflow-wrap:anywhere}
+.rt{display:flex;flex-direction:column;align-items:flex-end;gap:6px;white-space:nowrap}
+.rt .amt{font-weight:600;font-size:15px}
+.mstp{display:inline-flex;align-items:center;background:var(--parchment);border-radius:999px;padding:2px}
+.mstp button{width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;background:var(--cocoa);color:var(--cream);font-size:18px;line-height:1}
+.mstp .q{min-width:26px;text-align:center;font-weight:700;font-size:14px}
 .empty{margin:10px 0 0;color:var(--muted);font-size:15px;padding:14px;background:var(--parchment);border-radius:10px}
 .total{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px}
 .total span:first-child{font-weight:600}
 .total .amt{font-family:var(--display);font-size:28px;color:var(--cocoa)}
-
 .send{
   width:100%;min-height:54px;margin-top:18px;border:0;border-radius:12px;cursor:pointer;
   background:var(--espresso);color:var(--cream);font-weight:700;font-size:17px;
@@ -196,39 +220,26 @@ input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .send:hover{background:var(--espresso-2)}
 .send svg{width:22px;height:22px;fill:var(--gold-soft)}
 .after{font-size:13px;color:var(--muted);margin:12px 0 0}
-
 .done{margin-top:18px;padding:18px;border-radius:12px;background:var(--espresso);color:var(--cream)}
 .done h3{font-family:var(--display);font-weight:400;font-size:21px;margin:0 0 6px;color:var(--gold-soft)}
 .done p{margin:0 0 12px;font-size:15px;color:rgba(248,241,225,.88)}
 .done .row{display:flex;flex-wrap:wrap;gap:10px}
-.done a,.done button{
-  min-height:44px;padding:0 16px;border-radius:999px;font-weight:600;font-size:15px;cursor:pointer;
-  display:inline-flex;align-items:center;text-decoration:none;
-  border:1.5px solid var(--gold);background:transparent;color:var(--cream);
-}
+.done a,.done button{min-height:44px;padding:0 16px;border-radius:999px;font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none;border:1.5px solid var(--gold);background:transparent;color:var(--cream)}
 .done a.primary{background:var(--gold);color:var(--espresso)}
 
-/* ---------- Mobile bar ---------- */
-.bar{
-  position:fixed;left:0;right:0;bottom:0;z-index:20;
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));
-  background:var(--espresso);color:var(--cream);box-shadow:0 -10px 30px rgba(0,0,0,.25);
+/* ---------- Mobile bar + footer ---------- */
+.cartbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));background:var(--espresso);color:var(--cream);box-shadow:0 -10px 30px rgba(0,0,0,.25);
 }
-.bar small{display:block;font-size:13px;color:rgba(248,241,225,.75)}
-.bar strong{font-family:var(--display);font-weight:400;font-size:24px}
-.bar button{
-  min-height:46px;padding:0 24px;border-radius:999px;border:0;cursor:pointer;
-  background:var(--gold);color:var(--espresso);font-weight:700;font-size:16px;
-}
-
-footer{
-  background:var(--espresso);color:rgba(248,241,225,.8);text-align:center;
-  padding:30px 20px calc(30px + env(safe-area-inset-bottom,0px));font-size:14px;
-}
+.cartbar small{display:block;font-size:13px;color:rgba(248,241,225,.75)}
+.cartbar strong{font-family:var(--display);font-weight:400;font-size:24px}
+.cartbar button{min-height:46px;padding:0 24px;border-radius:999px;border:0;cursor:pointer;background:var(--gold);color:var(--espresso);font-weight:700;font-size:16px}
+footer{background:var(--espresso);color:rgba(248,241,225,.8);text-align:center;padding:30px 20px calc(30px + env(safe-area-inset-bottom,0px));font-size:14px}
 footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-size:18px;display:block;margin-bottom:4px}
-body.has-bar footer{margin-bottom:0}
 
+@media(max-width:520px){.stage{flex-basis:100%}}
+@media(max-width:380px){.types{gap:8px}}
 @media(prefers-reduced-motion:no-preference){
   .done{animation:rise .35s ease-out}
   @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -240,7 +251,7 @@ body.has-bar footer{margin-bottom:0}
 <header class="hero">
   <img class="logo" src="logo.png" alt="Manna Chocolates, a taste from above" width="250" height="250">
   <h1>Handmade chocolates, ordered in a minute</h1>
-  <p class="lede">Pick your chocolates and send the order to us on WhatsApp. We confirm it first, then you pay.</p>
+  <p class="lede">Build your chocolate and send the order to us on WhatsApp. We confirm it first, then you pay.</p>
   <ol class="steps" aria-label="How ordering works">
     <li><span class="n">1</span>Choose</li>
     <li><span class="n">2</span>We confirm</li>
@@ -252,10 +263,10 @@ body.has-bar footer{margin-bottom:0}
   <noscript><p class="empty">Please turn on JavaScript to place an order.</p></noscript>
   <div class="layout">
 
-    <section aria-labelledby="menu-h">
-      <h2 id="menu-h">Our chocolates</h2>
-      <p class="sub">Pick as many as you like. Tap Add on anything you want.</p>
-      <div id="menu"></div>
+    <section aria-labelledby="build-h" id="builder-top">
+      <h2 id="build-h">Build your chocolate</h2>
+      <p class="sub">Choose what you like, then add it to your order. You can add as many different ones as you want.</p>
+      <div class="builder" id="builder"></div>
     </section>
 
     <aside class="panel" id="details" aria-label="Your order">
@@ -295,7 +306,7 @@ body.has-bar footer{margin-bottom:0}
         </div>
 
         <h2 class="second">Your order</h2>
-        <p class="empty" id="empty">Nothing added yet. Add chocolates from the menu.</p>
+        <p class="empty" id="empty">Nothing added yet. Build a chocolate and tap Add to order.</p>
         <ul class="lines" id="lines" aria-live="polite"></ul>
         <div class="total" id="total-row" hidden><span>Items total</span><span class="amt" id="total">₹0</span></div>
         <p class="err" id="cart-err" role="alert" hidden></p>
@@ -323,7 +334,7 @@ body.has-bar footer{margin-bottom:0}
   </div>
 </main>
 
-<div class="bar" id="bar" hidden>
+<div class="cartbar" id="bar" hidden>
   <div><small id="bar-count">0 items</small><strong id="bar-total">₹0</strong></div>
   <button type="button" id="bar-btn">Continue</button>
 </div>
@@ -336,116 +347,250 @@ body.has-bar footer{margin-bottom:0}
 <script src="menu.js"></script>
 <script>
 const MAX_QTY = 20;
-const $ = (s, r = document) => r.querySelector(s);
-const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const fmt = n => CONFIG.currency + n.toLocaleString("en-IN");
-const cart = {};               // product id -> quantity
+const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+/* ---------- Option data (built from menu.js) ---------- */
+const flavour = id => FLAVOURS.find(f => f.id === id);
+const addinOf = id => ADDINS.find(a => a.id === id);
+const typeOf  = id => TYPES.find(t => t.id === id);
+const PAIRS = [];
+FLAVOURS.forEach((a, i) => FLAVOURS.slice(i + 1).forEach(b =>
+  PAIRS.push({ id: a.id + "+" + b.id, label: a.label + " + " + b.label, ids: [a.id, b.id] })));
+const REV = [...FLAVOURS].reverse();
+const THREE = { label: REV.map(f => f.label).join(" + "), ids: REV.map(f => f.id) };
+const STRUCTS = [
+  { id: "single", label: "Single" },
+  { id: "two",    label: "2 layers" },
+  { id: "three",  label: "3 layers" }
+];
+const MINI_ADDINS = ADDINS.filter(a => a.mini !== null);
+const CUSTOM_NO = 1 + ADDINS.length * (FLAVOURS.length + PAIRS.length + 1) + MINI_ADDINS.length * FLAVOURS.length;
+
+const st = { kind: "bar", structure: "single", flavor: FLAVOURS[0].id, pair: PAIRS[0].id, addIn: ADDINS[0].id, qty: 1 };
+const cart = [];            // { key, kind, title, detail, unit, qty, no, customText }
 let lastMessage = "";
 
-/* ---------- Menu ---------- */
-function buildMenu() {
-  const cats = [...new Set(PRODUCTS.map(p => p.cat))];
-  $("#menu").innerHTML = cats.map(cat => `
-    <h3 class="cat">${cat}</h3>
-    ${PRODUCTS.filter(p => p.cat === cat).map(p => `
-      <div class="item${p.img ? " has-photo" : ""}" data-id="${p.id}">
-        ${p.img
-          ? `<img class="photo" src="${p.img}" alt="" loading="lazy" data-type="${p.type}">`
-          : `<div class="swatch" data-type="${p.type}" aria-hidden="true"></div>`}
-        <div>
-          <div class="name">${p.name}</div>
-          ${p.desc ? `<div class="desc">${p.desc}</div>` : ""}
-          <div class="price">${fmt(p.price)}</div>
-        </div>
-        <div class="act">
-          <button type="button" class="add" data-act="add" aria-label="Add ${p.name}">Add</button>
-          <div class="stepper" hidden>
-            <button type="button" data-act="dec" aria-label="Remove one ${p.name}">&minus;</button>
-            <span class="qty" aria-live="polite">1</span>
-            <button type="button" data-act="inc" aria-label="Add one more ${p.name}">+</button>
-          </div>
-        </div>
-        ${p.custom ? `
-        <div class="custom-field" hidden>
-          <label for="cf-${p.id}">${p.customLabel || "Name"}</label>
-          <input type="text" id="cf-${p.id}" maxlength="60" placeholder="${p.customHint || ""}" autocomplete="off">
-          <p class="err" id="cf-${p.id}-err" role="alert" hidden></p>
-        </div>` : ""}
-      </div>`).join("")}
-  `).join("");
+/* ---------- Build the builder ---------- */
+function chips(name, opts) {
+  return `<div class="chips">` + opts.map(o => `
+    <label class="chip" data-opt="${o.id}">
+      <input type="radio" name="${name}" value="${o.id}">
+      <span>${o.color ? `<i class="dot" style="background:${o.color}"></i>` : ""}${esc(o.label)}<small class="x"></small></span>
+    </label>`).join("") + `</div>`;
 }
 
-// If a photo file is missing or misspelled, quietly fall back to the colour square
-function wirePhotoFallback() {
-  document.querySelectorAll("#menu img.photo").forEach(img => {
-    const swap = () => {
-      const sw = document.createElement("div");
-      sw.className = "swatch"; sw.dataset.type = img.dataset.type; sw.setAttribute("aria-hidden", "true");
-      img.closest(".item").classList.remove("has-photo");
-      img.replaceWith(sw);
-    };
-    img.addEventListener("error", swap);
-    if (img.complete && img.naturalWidth === 0) swap();
+function typeArt(t) {
+  let art = "";
+  if (t.id === "bar") art = `<div class="choc bar sm">${REV.map(f => `<div class="layer" style="background:${f.color}"></div>`).join("")}</div>`;
+  if (t.id === "mini") art = `<div class="choc mini sm"><div class="layer" style="background:${FLAVOURS[0].color}"></div></div>`;
+  if (t.id === "custom") art = `<div class="aa">Aa</div>`;
+  const img = t.img ? `<img class="timg" src="${esc(t.img)}" alt="" onerror="this.remove()">` : "";
+  return `<div class="art">${art}${img}</div>`;
+}
+
+function buildBuilder() {
+  $("#builder").innerHTML = `
+    <fieldset class="bgroup">
+      <legend>What would you like?</legend>
+      <div class="types">${TYPES.map(t => `
+        <label class="tcard">
+          <input type="radio" name="kind" value="${t.id}">
+          <span class="box">${typeArt(t)}<span class="lbl">${esc(t.label)}</span><span class="nt">${esc(t.note)}</span></span>
+        </label>`).join("")}
+      </div>
+    </fieldset>
+
+    <fieldset class="bgroup" id="g-struct"><legend>Layers</legend>${chips("structure", STRUCTS)}</fieldset>
+
+    <fieldset class="bgroup" id="g-flavor"><legend>Which chocolate?</legend>${chips("flavor", FLAVOURS)}</fieldset>
+
+    <fieldset class="bgroup" id="g-pair"><legend>Which two layers?</legend>${chips("pair", PAIRS)}</fieldset>
+
+    <div class="bgroup" id="g-three"><span class="lg">Your three layers</span>
+      <p class="note">${esc(THREE.label)}: all three chocolates layered in one bar.</p>
+    </div>
+
+    <fieldset class="bgroup" id="g-addin"><legend>Add-in</legend>${chips("addin", ADDINS)}</fieldset>
+
+    <div class="bgroup" id="g-custom">
+      <label class="lg" for="custom-text">Name to print on the chocolate</label>
+      <input type="text" id="custom-text" maxlength="30" placeholder="e.g. Asha" autocomplete="off">
+      <p class="hint">Want a particular chocolate (dark, milk or white)? Say so in the order note.</p>
+      <p class="err" id="custom-err" role="alert" hidden></p>
+    </div>
+
+    <div class="preview" aria-live="polite">
+      <div class="stage" id="stage"></div>
+      <div class="pv">
+        <div class="t" id="pv-title"></div>
+        <div class="d" id="pv-detail"></div>
+        <div class="p" id="pv-price"></div>
+      </div>
+    </div>
+
+    <div class="buy">
+      <div class="stepper" role="group" aria-label="Quantity">
+        <button type="button" id="bq-dec" aria-label="One less">&minus;</button>
+        <span class="qty" id="bq-val" aria-live="polite">1</span>
+        <button type="button" id="bq-inc" aria-label="One more">+</button>
+      </div>
+      <button type="button" class="addbtn" id="add-btn">Add to order</button>
+    </div>
+    <p class="added" id="added" aria-live="polite"></p>`;
+}
+
+/* ---------- Work out the chocolate currently selected ---------- */
+function compute() {
+  const a = addinOf(st.addIn);
+  if (st.kind === "custom") {
+    const text = $("#custom-text").value.trim();
+    return { kind: "custom", key: "custom|" + text.toLowerCase(), title: typeOf("custom").title, detail: "",
+             unit: PRICES.custom, no: CUSTOM_NO, layers: [], addIn: "plain", customText: text };
+  }
+  let layers, choc, idx, unit, no;
+  if (st.kind === "mini") {
+    layers = [st.flavor];
+    choc = flavour(st.flavor).label;
+    unit = PRICES.mini + a.mini;
+    no = 1 + ADDINS.length * (FLAVOURS.length + PAIRS.length + 1)
+           + MINI_ADDINS.findIndex(x => x.id === a.id) * FLAVOURS.length
+           + FLAVOURS.findIndex(f => f.id === st.flavor);
+    return { kind: "mini", key: ["mini", st.flavor, a.id].join("|"), title: typeOf("mini").title,
+             detail: choc + " · " + a.label, unit, no, layers, addIn: a.id };
+  }
+  const pairIdx = PAIRS.findIndex(p => p.id === st.pair);
+  if (st.structure === "single") {
+    layers = [st.flavor]; choc = flavour(st.flavor).label;
+    idx = FLAVOURS.findIndex(f => f.id === st.flavor); unit = PRICES.bar;
+  } else if (st.structure === "two") {
+    layers = PAIRS[pairIdx].ids; choc = PAIRS[pairIdx].label + " (2 layers)";
+    idx = FLAVOURS.length + pairIdx; unit = PRICES.bar + PRICES.twoLayers;
+  } else {
+    layers = THREE.ids; choc = THREE.label + " (3 layers)";
+    idx = FLAVOURS.length + PAIRS.length; unit = PRICES.bar + PRICES.threeLayers;
+  }
+  unit += a.bar;
+  no = 1 + ADDINS.findIndex(x => x.id === a.id) * (FLAVOURS.length + PAIRS.length + 1) + idx;
+  return { kind: "bar", key: ["bar", st.structure, layers.join("+"), a.id].join("|"), title: typeOf("bar").title,
+           detail: choc + " · " + a.label, unit, no, layers, addIn: a.id };
+}
+
+/* ---------- Keep the builder screen in step with the choices ---------- */
+function syncBuilder() {
+  if (st.kind === "mini" && addinOf(st.addIn).mini === null) st.addIn = ADDINS[0].id;
+  const map = { kind: st.kind, structure: st.structure, flavor: st.flavor, pair: st.pair, addin: st.addIn };
+  $$('#builder input[type=radio]').forEach(r => { r.checked = map[r.name] === r.value; });
+
+  const bar = st.kind === "bar", mini = st.kind === "mini", custom = st.kind === "custom";
+  $("#g-struct").hidden = !bar;
+  $("#g-flavor").hidden = !(mini || (bar && st.structure === "single"));
+  $("#g-pair").hidden   = !(bar && st.structure === "two");
+  $("#g-three").hidden  = !(bar && st.structure === "three");
+  $("#g-addin").hidden  = custom;
+  $("#g-custom").hidden = !custom;
+
+  $$("#g-addin .chip").forEach(l => {
+    const o = addinOf(l.dataset.opt), v = mini ? o.mini : o.bar;
+    l.hidden = v === null;
+    $(".x", l).textContent = v > 0 ? "+" + fmt(v) : "";
   });
+  const extra = { single: 0, two: PRICES.twoLayers, three: PRICES.threeLayers };
+  $$("#g-struct .chip").forEach(l => {
+    const v = extra[l.dataset.opt];
+    $(".x", l).textContent = v > 0 ? "+" + fmt(v) : "";
+  });
+
+  const c = compute();
+  if (c.kind === "custom") {
+    $("#stage").innerHTML = `<div class="choc bar custom"><div class="layer" style="background:${FLAVOURS[0].color}"></div><div class="nametext">${esc(c.customText || "Your name")}</div></div>`;
+    $("#pv-detail").textContent = c.customText ? "Name: " + c.customText : "Your name, printed on a chocolate";
+  } else {
+    $("#stage").innerHTML = `<div class="choc ${c.kind}">${c.layers.map(id => `<div class="layer" style="background:${flavour(id).color}"></div>`).join("")}${c.addIn !== "plain" ? `<div class="bits ${c.addIn}"></div>` : ""}</div>`;
+    $("#pv-detail").textContent = c.detail;
+  }
+  $("#pv-title").textContent = c.title;
+  $("#pv-price").textContent = fmt(c.unit) + " each";
+  $("#add-btn").textContent = "Add to order \u00b7 " + fmt(c.unit * st.qty);
+  $("#bq-val").textContent = st.qty;
+  $("#bq-dec").disabled = st.qty <= 1;
+  $("#bq-inc").disabled = st.qty >= MAX_QTY;
 }
 
-$("#menu").addEventListener("click", e => {
-  const btn = e.target.closest("button[data-act]");
-  if (!btn) return;
-  const row = btn.closest(".item");
-  const id = row.dataset.id;
-  const act = btn.dataset.act;
-  const cur = cart[id] || 0;
-  if (act === "add") cart[id] = 1;
-  if (act === "inc") cart[id] = Math.min(MAX_QTY, cur + 1);
-  if (act === "dec") cart[id] = cur - 1;
-  if (cart[id] <= 0) delete cart[id];
-  syncRow(row, act);
-  renderCart();
+$("#builder").addEventListener("change", e => {
+  const t = e.target;
+  if (t.type !== "radio") return;
+  if (t.name === "kind") st.kind = t.value;
+  if (t.name === "structure") st.structure = t.value;
+  if (t.name === "flavor") st.flavor = t.value;
+  if (t.name === "pair") st.pair = t.value;
+  if (t.name === "addin") st.addIn = t.value;
+  $("#added").textContent = "";
+  syncBuilder();
 });
-
-$("#menu").addEventListener("input", e => {
-  if (!e.target.matches(".custom-field input")) return;
+$("#builder").addEventListener("input", e => {
+  if (e.target.id !== "custom-text") return;
   e.target.classList.remove("invalid");
-  $("#" + e.target.id + "-err").hidden = true;
-  renderCart();
+  $("#custom-err").hidden = true;
+  syncBuilder();
+});
+$("#builder").addEventListener("click", e => {
+  if (e.target.closest("#bq-dec")) { st.qty = Math.max(1, st.qty - 1); syncBuilder(); }
+  if (e.target.closest("#bq-inc")) { st.qty = Math.min(MAX_QTY, st.qty + 1); syncBuilder(); }
+  if (e.target.closest("#add-btn")) addToCart();
 });
 
-function syncRow(row, act) {
-  const q = cart[row.dataset.id] || 0;
-  const add = $(".add", row), step = $(".stepper", row);
-  add.hidden = q > 0;
-  step.hidden = q === 0;
-  $(".qty", row).textContent = q;
-  $('[data-act="inc"]', row).disabled = q >= MAX_QTY;
-  const cf = $(".custom-field", row);
-  if (cf) cf.hidden = q === 0;
-  if (act === "add") (cf ? $("input", cf) : $('[data-act="inc"]', row)).focus();
-  if (q === 0 && act === "dec") add.focus();
+let flashTimer;
+function addToCart() {
+  const c = compute();
+  if (c.kind === "custom" && !c.customText) {
+    const err = $("#custom-err"); err.textContent = "Type the name you want on the chocolate."; err.hidden = false;
+    $("#custom-text").classList.add("invalid"); $("#custom-text").focus();
+    return;
+  }
+  const have = cart.find(l => l.key === c.key);
+  if (have) have.qty = Math.min(MAX_QTY, have.qty + st.qty);
+  else cart.push({ ...c, qty: st.qty });
+
+  $("#added").textContent = "Added: " + st.qty + " \u00d7 " + c.title + (c.detail ? ", " + c.detail : (c.customText ? ", " + c.customText : "")) + ".";
+  const btn = $("#add-btn");
+  btn.classList.add("ok"); btn.textContent = "Added \u2713";
+  clearTimeout(flashTimer);
+  flashTimer = setTimeout(() => { btn.classList.remove("ok"); syncBuilder(); }, 1100);
+  st.qty = 1;
+  if (c.kind === "custom") { $("#custom-text").value = ""; }
+  $("#bq-val").textContent = 1; $("#bq-dec").disabled = true; $("#bq-inc").disabled = false;
+  renderCart();
 }
 
-/* ---------- Cart ---------- */
-function cartItems() {
-  return PRODUCTS.filter(p => cart[p.id]).map(p => ({
-    ...p,
-    label: p.cat === "Custom" ? p.name : `${p.cat}: ${p.name}`,
-    customText: p.custom ? (($("#cf-" + p.id) || {}).value || "").trim() : "",
-    qty: cart[p.id],
-    sub: cart[p.id] * p.price
-  }));
-}
+/* ---------- Order summary ---------- */
+function renderCart(focus) {
+  const total = cart.reduce((s, l) => s + l.unit * l.qty, 0);
+  const count = cart.reduce((s, l) => s + l.qty, 0);
 
-function renderCart() {
-  const items = cartItems();
-  const total = items.reduce((s, i) => s + i.sub, 0);
-  const count = items.reduce((s, i) => s + i.qty, 0);
+  $("#lines").innerHTML = cart.map((l, i) => `
+    <li>
+      <div class="ln">
+        <div class="t">${esc(l.title)}</div>
+        <div class="d">${l.kind === "custom" ? "Name: " + esc(l.customText) : esc(l.detail)}</div>
+      </div>
+      <div class="rt">
+        <div class="mstp">
+          <button type="button" data-act="dec" data-i="${i}" aria-label="One less ${esc(l.title)}">&minus;</button>
+          <span class="q">${l.qty}</span>
+          <button type="button" data-act="inc" data-i="${i}" aria-label="One more ${esc(l.title)}" ${l.qty >= MAX_QTY ? "disabled" : ""}>+</button>
+        </div>
+        <div class="amt">${fmt(l.unit * l.qty)}</div>
+      </div>
+    </li>`).join("");
+  if (focus) { const b = $(`#lines [data-act="${focus.act}"][data-i="${focus.i}"]`); if (b) b.focus(); }
 
-  $("#lines").innerHTML = items.map(i =>
-    `<li><span>${esc(i.label)} <span class="q">× ${i.qty}</span>${i.custom && i.customText ? `<br><span class="q">Name: ${esc(i.customText)}</span>` : ""}</span><span>${fmt(i.sub)}</span></li>`).join("");
-  $("#empty").hidden = items.length > 0;
-  $("#total-row").hidden = items.length === 0;
+  $("#empty").hidden = cart.length > 0;
+  $("#total-row").hidden = cart.length === 0;
   $("#total").textContent = fmt(total);
-  if (items.length) hide("#cart-err");
+  if (cart.length) $("#cart-err").hidden = true;
 
   $("#bar").hidden = count === 0 || !!$("#done:not([hidden])");
   document.body.classList.toggle("has-bar", !$("#bar").hidden);
@@ -453,7 +598,17 @@ function renderCart() {
   $("#bar-total").textContent = fmt(total);
 }
 
-/* ---------- Form helpers ---------- */
+$("#lines").addEventListener("click", e => {
+  const b = e.target.closest("button[data-act]");
+  if (!b) return;
+  const i = +b.dataset.i, l = cart[i];
+  if (b.dataset.act === "inc") l.qty = Math.min(MAX_QTY, l.qty + 1);
+  if (b.dataset.act === "dec") l.qty -= 1;
+  if (l.qty <= 0) { cart.splice(i, 1); renderCart(); return; }
+  renderCart({ act: b.dataset.act, i });
+});
+
+/* ---------- Details form ---------- */
 function show(sel, msg) { const el = $(sel); el.textContent = msg; el.hidden = false; }
 function hide(sel) { $(sel).hidden = true; }
 
@@ -474,24 +629,23 @@ function normPhone(v) {
 function validate() {
   let first = null;
   const bad = (inputSel, errSel, msg) => {
-    show(errSel, msg); if (inputSel) $(inputSel).classList.add("invalid"); first = first || (inputSel || errSel);
+    show(errSel, msg); if (inputSel) $(inputSel).classList.add("invalid");
+    first = first || (inputSel || errSel);
   };
   ["#name", "#phone", "#address"].forEach(s => $(s).classList.remove("invalid"));
   ["#name-err", "#phone-err", "#address-err", "#cart-err"].forEach(hide);
-  document.querySelectorAll(".custom-field input").forEach(i => i.classList.remove("invalid"));
-  document.querySelectorAll(".custom-field .err").forEach(e => (e.hidden = true));
 
-  if (!cartItems().length) bad(null, "#cart-err", "Add at least one chocolate to your order.");
-  cartItems().filter(i => i.custom && !i.customText).forEach(i =>
-    bad("#cf-" + i.id, "#cf-" + i.id + "-err", "Type the name you want on your custom chocolate."));
+  const empty = cart.length === 0;
+  if (empty) bad(null, "#cart-err", "Add at least one chocolate to your order.");
   if ($("#name").value.trim().length < 2) bad("#name", "#name-err", "Enter your name.");
   if (!normPhone($("#phone").value)) bad("#phone", "#phone-err", "Enter a 10-digit mobile number, like 98765 43210.");
   const delivery = document.querySelector('input[name="mode"]:checked').value === "Delivery";
   if (delivery && $("#address").value.trim().length < 8) bad("#address", "#address-err", "Enter your full delivery address.");
 
   if (first) {
+    if (empty) { $("#builder-top").scrollIntoView({ block: "start" }); return false; }
     const t = $(first);
-    (t.matches("input,textarea") ? t : $("#total-row")).scrollIntoView({ block: "center" });
+    t.scrollIntoView({ block: "center" });
     if (t.matches("input,textarea")) t.focus();
     return false;
   }
@@ -505,17 +659,18 @@ function orderId() {
 }
 
 function buildMessage(id) {
-  const items = cartItems();
-  const total = items.reduce((s, i) => s + i.sub, 0);
+  const total = cart.reduce((s, l) => s + l.unit * l.qty, 0);
   const ph = normPhone($("#phone").value);
   const mode = document.querySelector('input[name="mode"]:checked').value;
   const note = $("#note").value.trim();
   const lines = [
     `*New order ${id}*`,
-    `Hi ${"Manna Chocolates"}, I'd like to place an order.`,
+    `Hi Manna Chocolates, I'd like to place an order.`,
     ``,
     `*Items*`,
-    ...items.map(i => `• ${i.qty} × ${i.label} (#${i.no}): ${fmt(i.sub)}` + (i.custom ? `\n   Custom name: *${i.customText}*` : "")),
+    ...cart.map(l => l.kind === "custom"
+      ? `\u2022 ${l.qty} \u00d7 ${l.title} (#${l.no}): ${fmt(l.unit * l.qty)}\n   Custom name: *${l.customText}*`
+      : `\u2022 ${l.qty} \u00d7 ${l.title}: ${l.detail} (#${l.no}): ${fmt(l.unit * l.qty)}`),
     ``,
     `*Items total: ${fmt(total)}*`,
     ``,
@@ -569,12 +724,13 @@ $("#copy-btn").addEventListener("click", async () => {
 });
 
 $("#new-btn").addEventListener("click", () => {
-  Object.keys(cart).forEach(k => delete cart[k]);
-  document.querySelectorAll(".custom-field input").forEach(i => (i.value = ""));
-  document.querySelectorAll(".item").forEach(r => syncRow(r, "reset"));
+  cart.length = 0;
+  $("#custom-text").value = "";
+  $("#added").textContent = "";
   $("#note").value = "";
   $("#done").hidden = true;
   $("#send-area").hidden = false;
+  syncBuilder();
   renderCart();
   window.scrollTo({ top: 0 });
 });
@@ -585,9 +741,8 @@ $("#bar-btn").addEventListener("click", () => {
   setTimeout(() => $("#name").focus({ preventScroll: true }), reduce ? 0 : 450);
 });
 
-/* ---------- Init ---------- */
-buildMenu();
-wirePhotoFallback();
+/* ---------- Start ---------- */
+buildBuilder();
 try {
   const saved = JSON.parse(localStorage.getItem("manna:details") || "null");
   if (saved) {
@@ -597,6 +752,7 @@ try {
   }
 } catch (_) {}
 setMode();
+syncBuilder();
 renderCart();
 </script>
 </body>
