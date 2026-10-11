@@ -52,14 +52,38 @@ const PRICES = {
 
 /* ---------------------------------------------------------------------
    DELIVERY  (applies to the whole order: bars and minis together)
-   charge    = Pan-India delivery charge
-   freeAbove = delivery is FREE when the items total is ABOVE this amount
+
+   local    = delivery within radiusKm of your shop
+   panIndia = delivery anywhere else in India
+   charge   = delivery charge for that area
+   freeFrom = the items total (in Rs) from which delivery is FREE
+              (Rs 300 means Rs 300 or more is free; Rs 1000 means Rs 1,000 or more)
+
    Pickup orders never pay a delivery charge.
    Customization charges are not counted towards the free-delivery amount.
+
+   localPincodes (optional): list the pincodes that are within your local
+   radius, for example ["560001", "560002", "560034"]. If you fill this in,
+   the page works out the area from the customer's pincode by itself and
+   the customer does not choose. Leave it as [] and customers choose
+   "Within 10 km" or "Pan-India" themselves; you confirm on WhatsApp.
+
+   shopArea (optional): shown as "Within 10 km of ..." e.g. "Indiranagar, Bengaluru"
+
+   lines = the four lines shown in the Delivery box on the page. They are
+           plain text, so if you change a number above, change it here too.
    --------------------------------------------------------------------- */
 const DELIVERY = {
-  charge: 99,
-  freeAbove: 999
+  local:    { radiusKm: 10, charge: 40, freeFrom: 300 },
+  panIndia: { charge: 99, freeFrom: 1000 },
+  localPincodes: [],
+  shopArea: "",
+  lines: [
+    "\ud83d\udccd Free Delivery within 10 km on orders above \u20b9300",
+    "\ud83d\ude9a Delivery Charge \u20b940 within 10 km for orders below \u20b9300",
+    "\ud83d\ude9a Pan-India Delivery \u20b999",
+    "\ud83c\udf81 FREE Pan-India Delivery above \u20b9999"
+  ]
 };
 
 /* ---------------------------------------------------------------------

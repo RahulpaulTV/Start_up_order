@@ -230,6 +230,35 @@ input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .seg input:checked + span{background:var(--cocoa);border-color:var(--cocoa);color:var(--cream)}
 .seg input:focus-visible + span{outline:3px solid var(--gold);outline-offset:2px}
 .hint{font-size:13px;color:var(--muted);margin:8px 0 0}
+.seg small{display:block;margin-top:2px;font-size:12.5px;font-weight:500;opacity:.85}
+.seg span{line-height:1.25}
+#pin{max-width:180px;letter-spacing:.06em}
+.delcard{margin-top:26px;padding:18px 20px;border-radius:16px;background:var(--paper);border:1px solid var(--line)}
+.delcard h3{font-family:var(--display);font-weight:400;font-size:22px;margin:0 0 10px;color:var(--cocoa)}
+.delcard ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.delcard li{font-size:15.5px;line-height:1.4}
+.dnote{margin:12px 0 0;font-size:13.5px;color:var(--muted)}
+.delivered{background:var(--parchment);padding:46px 18px 54px;margin-top:6px}
+.dwrap{max-width:1080px;margin:0 auto}
+.kicker{margin:0;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a5a14}
+.delivered h2{margin:6px 0 4px}
+.dscroll{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 2px 14px;margin:0 -2px;-webkit-overflow-scrolling:touch}
+.dcard{flex:0 0 260px;scroll-snap-align:start;background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.dphoto{position:relative;height:300px;background-color:#4a2511;background-image:linear-gradient(rgba(0,0,0,.26) 2px,transparent 2px),linear-gradient(90deg,rgba(0,0,0,.26) 2px,transparent 2px);background-size:33.333% 25%}
+.dphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dfallback{position:absolute;inset:0;display:grid;place-items:center;padding:16px;text-align:center;font-family:var(--display);font-size:36px;line-height:1.1;color:var(--gold-soft)}
+.stamp{position:absolute;top:12px;right:12px;transform:rotate(5deg);padding:6px 10px;border:2px solid var(--gold);border-radius:6px;background:rgba(248,241,225,.95);text-align:center;line-height:1.2}
+.stamp b{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#7a5a14}
+.stamp span{display:block;font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--cocoa)}
+.dbody{padding:14px 16px 16px}
+.dname{font-family:var(--display);font-size:20px;line-height:1.2;color:var(--cocoa)}
+.dmeta{margin-top:2px;font-size:13.5px;color:var(--muted)}
+.dquote{margin:10px 0 0;font-size:15px;font-style:italic}
+.dprod{margin-top:8px;font-size:13px;color:var(--muted)}
+.dcta{margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:16px 18px;border-radius:14px;background:var(--espresso);color:var(--cream)}
+.dcta p{margin:0;max-width:60ch;font-size:15px}
+.dcta a{min-height:46px;padding:0 20px;border-radius:999px;background:var(--gold);color:var(--espresso);font-weight:700;text-decoration:none;display:inline-flex;align-items:center}
+.lines{list-style:none;
 
 .tbox{margin-top:14px}
 .trow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:3px 0;font-size:15px}
@@ -309,6 +338,12 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
       <p class="sub" id="build-sub">Choose what you like, then add it to your order. You can add as many different ones as you want.</p>
       <div class="builder" id="builder"></div>
 
+      <div class="delcard" id="delcard">
+        <h3>Delivery</h3>
+        <ul id="del-lines"></ul>
+        <p class="dnote">Pickup is always free. We check your address and confirm the final delivery charge with you on WhatsApp.</p>
+      </div>
+
       <div class="bulk" id="bulk">
         <h3>Bulk orders welcome</h3>
         <p>Bulk orders are accepted. For customization (names, messages, logos or special designs), contact us on the number below.</p>
@@ -344,10 +379,22 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
           </div>
         </fieldset>
 
+        <fieldset class="field" id="zone-field">
+          <legend>Delivery area</legend>
+          <div class="seg">
+            <label><input type="radio" name="zone" value="local"><span id="zl-local">Within 10 km<small id="zs-local"></small></span></label>
+            <label><input type="radio" name="zone" value="pan" checked><span>Pan-India<small id="zs-pan"></small></span></label>
+          </div>
+        </fieldset>
+
         <div class="field" id="address-field">
           <label for="address">Delivery address</label>
-          <textarea id="address" autocomplete="street-address" placeholder="House no., street, area, city, pincode"></textarea>
+          <textarea id="address" autocomplete="street-address" placeholder="House no., street, area, city"></textarea>
           <p class="err" id="address-err" role="alert" hidden></p>
+          <label for="pin" style="margin-top:14px">Pincode</label>
+          <input id="pin" type="text" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="560001">
+          <p class="hint" id="pin-hint"></p>
+          <p class="err" id="pin-err" role="alert" hidden></p>
         </div>
         <p class="hint" id="pickup-hint" hidden>We'll share the pickup spot and time when we confirm your order.</p>
 
@@ -399,6 +446,19 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
   </div>
 </main>
 
+<section class="delivered" id="delivered" aria-labelledby="del-h" hidden>
+  <div class="dwrap">
+    <p class="kicker">Delivered with love</p>
+    <h2 id="del-h">Made for them, delivered to them</h2>
+    <p class="sub" id="del-cities"></p>
+    <div class="dscroll" id="del-list" tabindex="0" role="region" aria-label="Recent deliveries, scroll sideways"></div>
+    <div class="dcta">
+      <p>Got your Manna chocolate? Send us a photo on WhatsApp and we'll feature it. We only show your first name and city, and only with your permission.</p>
+      <a id="del-photo" href="#" target="_blank" rel="noopener">Send us a photo</a>
+    </div>
+  </div>
+</section>
+
 <div class="cartbar" id="bar" hidden>
   <div><small id="bar-count">0 items</small><strong id="bar-total">₹0</strong></div>
   <button type="button" id="bar-btn">Continue</button>
@@ -411,6 +471,7 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
 </footer>
 
 <script src="menu.js"></script>
+<script src="deliveries.js"></script>
 <script>
 const MAX_QTY = 20;                       // most of one bar order line
 const maxQty = kind => (kind === "mini" ? 500 : MAX_QTY);
@@ -741,11 +802,30 @@ function addToCart() {
 }
 
 /* ---------- Delivery charge ---------- */
+function zoneNow() {                    // "local", "pan", or null for pickup
+  if (document.querySelector('input[name="mode"]:checked').value === "Pickup") return null;
+  if (DELIVERY.localPincodes.length) return DELIVERY.localPincodes.includes($("#pin").value.trim()) ? "local" : "pan";
+  return document.querySelector('input[name="zone"]:checked').value;
+}
 function deliveryInfo(items) {
-  const pickup = document.querySelector('input[name="mode"]:checked').value === "Pickup";
-  if (pickup) return { fee: 0, pickup: true, label: "Pickup", text: "No charge" };
-  if (items > DELIVERY.freeAbove) return { fee: 0, free: true, label: "Delivery (Pan-India)", text: "FREE" };
-  return { fee: DELIVERY.charge, label: "Delivery (Pan-India)", text: fmt(DELIVERY.charge) };
+  const z = zoneNow();
+  if (!z) return { fee: 0, pickup: true, label: "Pickup", text: "No charge", need: 0 };
+  const rule = z === "local" ? DELIVERY.local : DELIVERY.panIndia;
+  const label = z === "local" ? "Delivery (within " + DELIVERY.local.radiusKm + " km)" : "Delivery (Pan-India)";
+  const base = { zone: z, label, freeFrom: rule.freeFrom, need: Math.max(0, rule.freeFrom - items) };
+  return items >= rule.freeFrom ? { ...base, fee: 0, free: true, text: "FREE" }
+                                : { ...base, fee: rule.charge, text: fmt(rule.charge) };
+}
+function updateZoneHint() {
+  const h = $("#pin-hint"), z = zoneNow();
+  if (!z) { h.textContent = ""; return; }
+  if (DELIVERY.localPincodes.length) {
+    h.textContent = /^\d{6}$/.test($("#pin").value.trim())
+      ? (z === "local" ? "\u2713 Within our local delivery area (" + DELIVERY.local.radiusKm + " km)" : "Pan-India delivery to this pincode")
+      : "";
+  } else {
+    h.textContent = z === "local" ? "We'll check that your address is within " + DELIVERY.local.radiusKm + " km and confirm on WhatsApp." : "";
+  }
 }
 
 /* ---------- Order summary ---------- */
@@ -780,8 +860,8 @@ function renderCart(focus) {
   $("#total").textContent = fmt(total + di.fee);
   const sn = $("#ship-note");
   sn.hidden = di.pickup || cart.length === 0;
-  sn.textContent = di.free ? "You've got FREE delivery on this order."
-                           : "Add " + fmt(DELIVERY.freeAbove + 1 - total) + " more to get FREE delivery.";
+  if (!di.pickup) sn.textContent = di.free ? "You've got FREE delivery on this order."
+                                            : "Add " + fmt(di.need) + " more to get FREE delivery.";
   $("#cz-total-note").hidden = !cart.some(l => l.customText);
   const short = miniShort(), mn = $("#mini-note");
   mn.hidden = short.length === 0;
@@ -829,10 +909,13 @@ const dateMax = () => ymd(dayAhead(CONFIG.maxDaysAhead));
 function setMode() {
   const delivery = document.querySelector('input[name="mode"]:checked').value === "Delivery";
   $("#address-field").hidden = !delivery;
+  $("#zone-field").hidden = !delivery || DELIVERY.localPincodes.length > 0;
   $("#pickup-hint").hidden = delivery;
   $("#date-label").textContent = delivery ? "Preferred delivery date" : "Preferred pickup date";
 }
-document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", () => { setMode(); renderCart(); }));
+document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", () => { setMode(); updateZoneHint(); renderCart(); }));
+document.querySelectorAll('input[name="zone"]').forEach(r => r.addEventListener("change", () => { updateZoneHint(); renderCart(); }));
+$("#pin").addEventListener("input", () => { $("#pin").classList.remove("invalid"); $("#pin-err").hidden = true; updateZoneHint(); renderCart(); });
 
 function normPhone(v) {
   let d = v.replace(/\D/g, "");
@@ -847,8 +930,8 @@ function validate() {
     show(errSel, msg); if (inputSel) $(inputSel).classList.add("invalid");
     first = first || (inputSel || errSel);
   };
-  ["#name", "#phone", "#address", "#date"].forEach(s => $(s).classList.remove("invalid"));
-  ["#name-err", "#phone-err", "#address-err", "#date-err", "#cart-err"].forEach(hide);
+  ["#name", "#phone", "#address", "#pin", "#date"].forEach(s => $(s).classList.remove("invalid"));
+  ["#name-err", "#phone-err", "#address-err", "#pin-err", "#date-err", "#cart-err"].forEach(hide);
 
   const empty = cart.length === 0;
   let quick = false;
@@ -867,6 +950,7 @@ function validate() {
   if (!normPhone($("#phone").value)) bad("#phone", "#phone-err", "Enter a 10-digit mobile number, like 98765 43210.");
   const delivery = document.querySelector('input[name="mode"]:checked').value === "Delivery";
   if (delivery && $("#address").value.trim().length < 8) bad("#address", "#address-err", "Enter your full delivery address.");
+  if (delivery && !/^[1-9]\d{5}$/.test($("#pin").value.trim())) bad("#pin", "#pin-err", "Enter your 6-digit pincode.");
   if (!empty && miniShort().length) first = first || "#mini-note";   // the red note above the Send button already explains it
   const dv = $("#date").value;
   if (!dv) bad("#date", "#date-err", "Choose your preferred date.");
@@ -909,8 +993,8 @@ function buildMessage(id) {
     ``,
     `*Items total: ${fmt(total)}*`,
     ...(di.pickup ? [`*Pickup:* no delivery charge`]
-        : di.free ? [`*Delivery (Pan-India):* FREE (order above ${fmt(DELIVERY.freeAbove)})`]
-        : [`*Delivery (Pan-India):* ${fmt(DELIVERY.charge)}`]),
+        : di.free ? [`*${di.label}:* FREE (order ${fmt(di.freeFrom)} or more)`]
+        : [`*${di.label}:* ${fmt(di.fee)}`]),
     `*Order total: ${fmt(total + di.fee)}*`,
     ...(cart.some(l => l.customText) ? [`(Customization extra, from ${fmt(PRICES.customizeFrom)}, to be confirmed)`] : []),
     ``,
@@ -918,7 +1002,13 @@ function buildMessage(id) {
     `*Phone:* +91 ${ph.slice(0, 5)} ${ph.slice(5)}`,
     `*Order type:* ${mode}`
   ];
-  if (mode === "Delivery") lines.push(`*Address:* ${$("#address").value.trim().replace(/\s*\n\s*/g, ", ")}`);
+  if (mode === "Delivery") {
+    const how = DELIVERY.localPincodes.length ? (di.zone === "local" ? " (pincode is in our local list)" : "")
+              : (di.zone === "local" ? " (customer selected, please verify)" : "");
+    lines.push(`*Delivery area:* ${di.zone === "local" ? "Within " + DELIVERY.local.radiusKm + " km" : "Pan-India"}${how}`);
+    lines.push(`*Address:* ${$("#address").value.trim().replace(/\s*\n\s*/g, ", ")}`);
+    lines.push(`*Pincode:* ${$("#pin").value.trim()}`);
+  }
   lines.push(`*Preferred ${mode === "Delivery" ? "delivery" : "pickup"} date:* ${prettyDate($("#date").value)}`);
   if (note) lines.push(`*Note:* ${note.replace(/\s*\n\s*/g, " ")}`);
   lines.push(``, `Please confirm availability and the final total. I'll pay once you approve.`);
@@ -935,7 +1025,7 @@ $("#order-form").addEventListener("submit", e => {
 
   try {
     localStorage.setItem("manna:details", JSON.stringify({
-      name: $("#name").value.trim(), phone: $("#phone").value.trim(), address: $("#address").value.trim()
+      name: $("#name").value.trim(), phone: $("#phone").value.trim(), address: $("#address").value.trim(), pin: $("#pin").value.trim()
     }));
   } catch (_) {}
 
@@ -994,10 +1084,41 @@ function renderContact() {
     encodeURIComponent("Hi Manna Chocolates, I'd like to ask about a bulk order / customization.");
 }
 
+/* ---------- "Delivered with love" gallery (data comes from deliveries.js) ---------- */
+function renderDelivered() {
+  const list = (typeof DELIVERIES !== "undefined" ? DELIVERIES : []).filter(d => d && (d.name || d.city));
+  if (!list.length) return;                       // stays hidden until you add real deliveries
+  $("#delivered").hidden = false;
+  const cities = [...new Set(list.map(d => d.city).filter(Boolean))];
+  $("#del-cities").textContent = cities.length ? "Recently delivered to " + cities.join(" \u00b7 ") : "";
+  $("#del-list").innerHTML = list.map(d => `
+    <article class="dcard">
+      <div class="dphoto">
+        <div class="dfallback">${esc(d.name || d.city || "")}</div>
+        ${d.photo ? `<img src="${esc(d.photo)}" alt="Chocolate delivered${d.city ? " in " + esc(d.city) : ""}" loading="lazy" onerror="this.remove()">` : ""}
+        <div class="stamp"><b>Delivered</b><span>${esc(((d.city || "") + (d.date ? " \u00b7 " + d.date : "")).toUpperCase())}</span></div>
+      </div>
+      <div class="dbody">
+        ${d.name ? `<div class="dname">Made for ${esc(d.name)}</div>` : ""}
+        <div class="dmeta">${[d.occasion, d.city].filter(Boolean).map(esc).join(" \u00b7 ")}</div>
+        ${d.quote ? `<p class="dquote">\u201c${esc(d.quote)}\u201d</p>` : ""}
+        ${d.product ? `<div class="dprod">${esc(d.product)}</div>` : ""}
+      </div>
+    </article>`).join("");
+  $("#del-photo").href = "https://wa.me/" + CONFIG.whatsappNumber + "?text=" +
+    encodeURIComponent("Hi Manna Chocolates, here's a photo of my order. You can feature it (first name and city only).");
+}
+
 /* ---------- Start ---------- */
 buildBuilder();
 renderContact();
-$("#ship-banner").textContent = "Pan-India delivery " + fmt(DELIVERY.charge) + "  \u00b7  FREE on orders above " + fmt(DELIVERY.freeAbove);
+$("#ship-banner").textContent = "\ud83d\udccd Free within " + DELIVERY.local.radiusKm + " km above " + fmt(DELIVERY.local.freeFrom) +
+  "  \u00b7  \ud83c\udf81 Free Pan-India above " + fmt(DELIVERY.panIndia.freeFrom - 1);
+$("#del-lines").innerHTML = DELIVERY.lines.map(t => "<li>" + esc(t) + "</li>").join("");
+$("#zl-local").firstChild.textContent = "Within " + DELIVERY.local.radiusKm + " km" + (DELIVERY.shopArea ? " of " + DELIVERY.shopArea : "");
+$("#zs-local").textContent = fmt(DELIVERY.local.charge) + ", free from " + fmt(DELIVERY.local.freeFrom);
+$("#zs-pan").textContent = fmt(DELIVERY.panIndia.charge) + ", free from " + fmt(DELIVERY.panIndia.freeFrom);
+renderDelivered();
 $("#build-sub").textContent = "Choose what you like, then add it to your order. Bars from " +
   fmt(Math.min(...Object.values(WEIGHTS[0].prices))) + ", minis from " + fmt(PRICES.mini) + ".";
 try {
@@ -1006,6 +1127,7 @@ try {
     $("#name").value = saved.name || "";
     $("#phone").value = saved.phone || "";
     $("#address").value = saved.address || "";
+    $("#pin").value = saved.pin || "";
   }
 } catch (_) {}
 $("#date").min = dateMin();
