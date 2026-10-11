@@ -231,6 +231,13 @@ input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .seg input:focus-visible + span{outline:3px solid var(--gold);outline-offset:2px}
 .hint{font-size:13px;color:var(--muted);margin:8px 0 0}
 
+.tbox{margin-top:14px}
+.trow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:3px 0;font-size:15px}
+.trow span:last-child{font-weight:600}
+.trow .free{color:#2f5a35;font-weight:700}
+.ship-note{margin:6px 0 4px;padding:8px 12px;border-radius:10px;background:var(--parchment);font-size:13.5px;font-weight:600;color:var(--cocoa)}
+.tbox .total{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.shipbanner{display:inline-block;margin:18px auto 0;padding:8px 18px;border-radius:999px;border:1px solid rgba(226,191,114,.7);color:var(--gold-soft);font-size:14.5px;font-weight:600;letter-spacing:.01em}
 .lines{list-style:none;margin:8px 0 0;padding:0}
 .lines li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
 .ln .t{font-weight:600;font-size:15px}
@@ -290,6 +297,7 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
     <li><span class="n">2</span>We confirm</li>
     <li><span class="n">3</span>You pay</li>
   </ol>
+  <p class="shipbanner" id="ship-banner"></p>
 </header>
 
 <main class="wrap">
@@ -358,7 +366,12 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
         <h2 class="second">Your order</h2>
         <p class="empty" id="empty">Nothing added yet. Build a chocolate and tap Add to order.</p>
         <ul class="lines" id="lines" aria-live="polite"></ul>
-        <div class="total" id="total-row" hidden><span>Items total</span><span class="amt" id="total">₹0</span></div>
+        <div class="tbox" id="total-row" hidden>
+          <div class="trow"><span>Items total</span><span id="sub">₹0</span></div>
+          <div class="trow"><span id="ship-label">Delivery (Pan-India)</span><span id="ship">₹99</span></div>
+          <p class="ship-note" id="ship-note" hidden></p>
+          <div class="total"><span>Total</span><span class="amt" id="total">₹0</span></div>
+        </div>
         <p class="mini-note" id="mini-note" role="status" hidden></p>
         <p class="cz-note" id="cz-total-note" hidden>Customization is extra, from <span id="cz-from"></span>. We'll confirm the exact amount with you on WhatsApp.</p>
         <p class="err" id="cart-err" role="alert" hidden></p>
@@ -727,6 +740,14 @@ function addToCart() {
   renderCart();
 }
 
+/* ---------- Delivery charge ---------- */
+function deliveryInfo(items) {
+  const pickup = document.querySelector('input[name="mode"]:checked').value === "Pickup";
+  if (pickup) return { fee: 0, pickup: true, label: "Pickup", text: "No charge" };
+  if (items > DELIVERY.freeAbove) return { fee: 0, free: true, label: "Delivery (Pan-India)", text: "FREE" };
+  return { fee: DELIVERY.charge, label: "Delivery (Pan-India)", text: fmt(DELIVERY.charge) };
+}
+
 /* ---------- Order summary ---------- */
 function renderCart(focus) {
   const total = cart.reduce((s, l) => s + l.unit * l.qty, 0);
@@ -751,7 +772,16 @@ function renderCart(focus) {
 
   $("#empty").hidden = cart.length > 0;
   $("#total-row").hidden = cart.length === 0;
-  $("#total").textContent = fmt(total);
+  const di = deliveryInfo(total);
+  $("#sub").textContent = fmt(total);
+  $("#ship-label").textContent = di.label;
+  $("#ship").textContent = di.text;
+  $("#ship").classList.toggle("free", !!di.free);
+  $("#total").textContent = fmt(total + di.fee);
+  const sn = $("#ship-note");
+  sn.hidden = di.pickup || cart.length === 0;
+  sn.textContent = di.free ? "You've got FREE delivery on this order."
+                           : "Add " + fmt(DELIVERY.freeAbove + 1 - total) + " more to get FREE delivery.";
   $("#cz-total-note").hidden = !cart.some(l => l.customText);
   const short = miniShort(), mn = $("#mini-note");
   mn.hidden = short.length === 0;
@@ -802,7 +832,7 @@ function setMode() {
   $("#pickup-hint").hidden = delivery;
   $("#date-label").textContent = delivery ? "Preferred delivery date" : "Preferred pickup date";
 }
-document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", setMode));
+document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", () => { setMode(); renderCart(); }));
 
 function normPhone(v) {
   let d = v.replace(/\D/g, "");
@@ -865,6 +895,7 @@ function orderId() {
 
 function buildMessage(id) {
   const total = cart.reduce((s, l) => s + l.unit * l.qty, 0);
+  const di = deliveryInfo(total);
   const ph = normPhone($("#phone").value);
   const mode = document.querySelector('input[name="mode"]:checked').value;
   const note = $("#note").value.trim();
@@ -877,6 +908,10 @@ function buildMessage(id) {
       + (l.customText ? `\n   Customize, print: *${l.customText}*` : "")),
     ``,
     `*Items total: ${fmt(total)}*`,
+    ...(di.pickup ? [`*Pickup:* no delivery charge`]
+        : di.free ? [`*Delivery (Pan-India):* FREE (order above ${fmt(DELIVERY.freeAbove)})`]
+        : [`*Delivery (Pan-India):* ${fmt(DELIVERY.charge)}`]),
+    `*Order total: ${fmt(total + di.fee)}*`,
     ...(cart.some(l => l.customText) ? [`(Customization extra, from ${fmt(PRICES.customizeFrom)}, to be confirmed)`] : []),
     ``,
     `*Name:* ${$("#name").value.trim()}`,
@@ -962,6 +997,7 @@ function renderContact() {
 /* ---------- Start ---------- */
 buildBuilder();
 renderContact();
+$("#ship-banner").textContent = "Pan-India delivery " + fmt(DELIVERY.charge) + "  \u00b7  FREE on orders above " + fmt(DELIVERY.freeAbove);
 $("#build-sub").textContent = "Choose what you like, then add it to your order. Bars from " +
   fmt(Math.min(...Object.values(WEIGHTS[0].prices))) + ", minis from " + fmt(PRICES.mini) + ".";
 try {

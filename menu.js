@@ -41,7 +41,7 @@ const WEIGHTS = [
    OTHER PRICES
    --------------------------------------------------------------------- */
 const PRICES = {
-  mini: 12,            // 10 g mini, plain (Fruits & Nuts adds 5 more = Rs 17)
+  mini: 10,            // mini chocolate, plain (Fruits & Nuts adds 2 more = Rs 12)
   miniMinimum: 10,     // smallest number of minis per type: 10+ Plain and/or 10+ Fruits & Nuts.
                        // Dark, Milk and White can be mixed freely; Plain and Fruits & Nuts cannot be counted together.
   twoLayers: 20,       // flat extra for a 2-layer bar (about Rs 20 per extra layer)
@@ -51,14 +51,26 @@ const PRICES = {
 };
 
 /* ---------------------------------------------------------------------
+   DELIVERY  (applies to the whole order: bars and minis together)
+   charge    = Pan-India delivery charge
+   freeAbove = delivery is FREE when the items total is ABOVE this amount
+   Pickup orders never pay a delivery charge.
+   Customization charges are not counted towards the free-delivery amount.
+   --------------------------------------------------------------------- */
+const DELIVERY = {
+  charge: 99,
+  freeAbove: 999
+};
+
+/* ---------------------------------------------------------------------
    ADD-INS
    id must match the names used in the WEIGHTS table above (plain, nuts, oats).
-   mini = extra price on a 10 g mini.  mini: null means "not offered for minis".
+   mini = extra price on a mini.  mini: null means "not offered for minis".
    Keep "plain" first.
    --------------------------------------------------------------------- */
 const ADDINS = [
   { id:"plain", label:"Plain",         mini:0 },
-  { id:"nuts",  label:"Fruits & Nuts", mini:5 },
+  { id:"nuts",  label:"Fruits & Nuts", mini:2 },
   { id:"oats",  label:"Oats",          mini:null }
 ];
 
@@ -80,5 +92,5 @@ const FLAVOURS = [
    --------------------------------------------------------------------- */
 const TYPES = [
   { id:"bar",  label:"Bar",  title:"Bar chocolate",      note:"100 g, 150 g or 200 g. Can be customized" },
-  { id:"mini", label:"Mini", title:"Mini 10g chocolate", note:"10g bite-size piece" }
+  { id:"mini", label:"Mini", title:"Mini chocolate", note:"Bite-size piece" }
 ];
