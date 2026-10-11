@@ -258,8 +258,6 @@ input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .dcta{margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:16px 18px;border-radius:14px;background:var(--espresso);color:var(--cream)}
 .dcta p{margin:0;max-width:60ch;font-size:15px}
 .dcta a{min-height:46px;padding:0 20px;border-radius:999px;background:var(--gold);color:var(--espresso);font-weight:700;text-decoration:none;display:inline-flex;align-items:center}
-.lines{list-style:none;
-
 .tbox{margin-top:14px}
 .trow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:3px 0;font-size:15px}
 .trow span:last-child{font-weight:600}
@@ -267,6 +265,26 @@ input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .ship-note{margin:6px 0 4px;padding:8px 12px;border-radius:10px;background:var(--parchment);font-size:13.5px;font-weight:600;color:var(--cocoa)}
 .tbox .total{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
 .shipbanner{display:inline-block;margin:18px auto 0;padding:8px 18px;border-radius:999px;border:1px solid rgba(226,191,114,.7);color:var(--gold-soft);font-size:14.5px;font-weight:600;letter-spacing:.01em}
+.gallery{max-width:1080px;margin:0 auto;padding:6px 18px 0}
+.gbox{position:relative;border-radius:18px;overflow:hidden;background:var(--cocoa);box-shadow:0 18px 40px -26px rgba(74,37,17,.55)}
+.gslides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gslides::-webkit-scrollbar{display:none}
+.gslides:focus-visible{outline-offset:-4px}
+.slide{flex:0 0 100%;scroll-snap-align:center;position:relative;margin:0;aspect-ratio:4/3}
+@media(min-width:700px){.slide{aspect-ratio:16/9}}
+.slide img{width:100%;height:100%;object-fit:cover;display:block}
+.slide figcaption{position:absolute;left:0;right:0;bottom:0;padding:14px 18px 16px;background:rgba(37,20,12,.74);color:var(--cream)}
+.slide .gt{font-family:var(--display);font-size:21px;line-height:1.2}
+.slide .gc{margin-top:2px;font-size:14.5px;opacity:.92}
+.garrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:50%;background:rgba(248,241,225,.94);color:var(--cocoa);cursor:pointer;display:grid;place-items:center}
+.garrow svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.gprev{left:12px}
+.gnext{right:12px}
+.gpause{position:absolute;top:12px;right:12px;min-height:36px;padding:0 14px;border:0;border-radius:999px;background:rgba(37,20,12,.74);color:var(--cream);font-size:13px;font-weight:600;cursor:pointer}
+.gdots{display:flex;justify-content:center;margin-top:4px}
+.gdot{width:28px;height:28px;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.gdot::after{content:"";width:9px;height:9px;border-radius:50%;background:rgba(74,37,17,.28)}
+.gdot[aria-current="true"]::after{width:11px;height:11px;background:var(--cocoa)}
 .lines{list-style:none;margin:8px 0 0;padding:0}
 .lines li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
 .ln .t{font-weight:600;font-size:15px}
@@ -328,6 +346,16 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
   </ol>
   <p class="shipbanner" id="ship-banner"></p>
 </header>
+
+<section class="gallery" id="gallery" aria-roledescription="carousel" aria-label="Photos of our chocolates" hidden>
+  <div class="gbox">
+    <div class="gslides" id="g-slides" tabindex="0"></div>
+    <button type="button" class="garrow gprev" id="g-prev" aria-label="Previous photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button type="button" class="garrow gnext" id="g-next" aria-label="Next photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+    <button type="button" class="gpause" id="g-pause" aria-label="Pause the slideshow">Pause</button>
+  </div>
+  <div class="gdots" id="g-dots"></div>
+</section>
 
 <main class="wrap">
   <noscript><p class="empty">Please turn on JavaScript to place an order.</p></noscript>
@@ -472,6 +500,7 @@ footer b{font-family:var(--display);font-weight:400;color:var(--gold-soft);font-
 
 <script src="menu.js"></script>
 <script src="deliveries.js"></script>
+<script src="gallery.js"></script>
 <script>
 const MAX_QTY = 20;                       // most of one bar order line
 const maxQty = kind => (kind === "mini" ? 500 : MAX_QTY);
@@ -940,7 +969,7 @@ function validate() {
     quick = touched && items.length > 0 && !(st.kind === "bar" && st.cz && !items[0].customText);
     const el = $("#cart-err");
     el.innerHTML = quick
-      ? `You haven't added your chocolate to the order yet. <button type="button" class="qa" id="quick-add">Add ${esc(pendingLabel(items))} \u00b7 ${fmt(pendingTotal(items))}</button>`
+      ? `You chose a chocolate but haven't added it to your order yet. Tap here to add it:<button type="button" class="qa" id="quick-add">Add ${esc(pendingLabel(items))} \u00b7 ${fmt(pendingTotal(items))}</button>`
       : `Your order is empty. Choose a chocolate and tap <b>Add to order</b>.`;
     el.hidden = false;
     first = first || "#cart-err";
@@ -1109,6 +1138,69 @@ function renderDelivered() {
     encodeURIComponent("Hi Manna Chocolates, here's a photo of my order. You can feature it (first name and city only).");
 }
 
+/* ---------- Photo slideshow (photos come from gallery.js) ---------- */
+async function initGallery() {
+  const listed = (typeof GALLERY !== "undefined" ? GALLERY : []).filter(g => g && g.img);
+  if (!listed.length) return;                      // stays hidden until you add photos
+  // keep only photos that really load, so a wrong file name never leaves a blank slide
+  const items = (await Promise.all(listed.map(g => new Promise(res => {
+    const im = new Image(); im.onload = () => res(g); im.onerror = () => res(null); im.src = g.img;
+  })))).filter(Boolean);
+  if (!items.length) return;
+
+  const n = items.length, box = $("#gallery"), slides = $("#g-slides"), dots = $("#g-dots");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let idx = 0, timer = null, userPaused = false, hovering = false, settle = null, resume = null;
+
+  slides.innerHTML = items.map((g, i) => `
+    <figure class="slide" role="group" aria-roledescription="slide" aria-label="Photo ${i + 1} of ${n}">
+      <img src="${esc(g.img)}" alt="${esc(g.title || g.caption || "Manna chocolates")}">
+      ${g.title || g.caption ? `<figcaption>${g.title ? `<div class="gt">${esc(g.title)}</div>` : ""}${g.caption ? `<div class="gc">${esc(g.caption)}</div>` : ""}</figcaption>` : ""}
+    </figure>`).join("");
+  dots.innerHTML = items.map((_, i) => `<button type="button" class="gdot" data-i="${i}" aria-label="Show photo ${i + 1}"></button>`).join("");
+  box.hidden = false;
+
+  const single = n < 2;
+  $("#g-prev").hidden = $("#g-next").hidden = $("#g-pause").hidden = dots.hidden = single || false;
+  if (reduce) $("#g-pause").hidden = true;       // no automatic sliding for people who asked for less motion
+
+  const mark = () => dots.querySelectorAll(".gdot").forEach((d, i) => d.setAttribute("aria-current", String(i === idx)));
+  const go = i => { idx = (i + n) % n; slides.scrollTo({ left: idx * slides.clientWidth, behavior: reduce ? "auto" : "smooth" }); mark(); };
+  const stop = () => { clearInterval(timer); timer = null; };
+  const play = () => {
+    if (single || reduce || userPaused || hovering || document.hidden) return;
+    stop(); timer = setInterval(() => go(idx + 1), 4500);
+  };
+  mark(); play();
+
+  slides.addEventListener("scroll", () => {       // swiping by hand: keep the dots in step
+    clearTimeout(settle);
+    settle = setTimeout(() => { idx = Math.round(slides.scrollLeft / slides.clientWidth); mark(); }, 90);
+  });
+  $("#g-prev").addEventListener("click", () => { stop(); go(idx - 1); play(); });
+  $("#g-next").addEventListener("click", () => { stop(); go(idx + 1); play(); });
+  dots.addEventListener("click", e => { const d = e.target.closest(".gdot"); if (d) { stop(); go(+d.dataset.i); play(); } });
+  slides.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft")  { e.preventDefault(); stop(); go(idx - 1); play(); }
+    if (e.key === "ArrowRight") { e.preventDefault(); stop(); go(idx + 1); play(); }
+  });
+  $("#g-pause").addEventListener("click", () => {
+    userPaused = !userPaused;
+    $("#g-pause").textContent = userPaused ? "Play" : "Pause";
+    $("#g-pause").setAttribute("aria-label", userPaused ? "Play the slideshow" : "Pause the slideshow");
+    userPaused ? stop() : play();
+  });
+  box.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") { hovering = true; stop(); } });
+  box.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") { hovering = false; play(); } });
+  box.addEventListener("focusin", stop);
+  box.addEventListener("focusout", play);
+  box.addEventListener("pointerdown", e => {      // touching the photo pauses it for a few seconds
+    if (e.pointerType !== "mouse") { stop(); clearTimeout(resume); resume = setTimeout(play, 6000); }
+  });
+  document.addEventListener("visibilitychange", () => (document.hidden ? stop() : play()));
+  window.addEventListener("resize", () => slides.scrollTo({ left: idx * slides.clientWidth, behavior: "auto" }));
+}
+
 /* ---------- Start ---------- */
 buildBuilder();
 renderContact();
@@ -1119,6 +1211,7 @@ $("#zl-local").firstChild.textContent = "Within " + DELIVERY.local.radiusKm + " 
 $("#zs-local").textContent = fmt(DELIVERY.local.charge) + ", free from " + fmt(DELIVERY.local.freeFrom);
 $("#zs-pan").textContent = fmt(DELIVERY.panIndia.charge) + ", free from " + fmt(DELIVERY.panIndia.freeFrom);
 renderDelivered();
+initGallery();
 $("#build-sub").textContent = "Choose what you like, then add it to your order. Bars from " +
   fmt(Math.min(...Object.values(WEIGHTS[0].prices))) + ", minis from " + fmt(PRICES.mini) + ".";
 try {
