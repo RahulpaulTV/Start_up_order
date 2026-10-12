@@ -1139,13 +1139,35 @@ function renderDelivered() {
 
 /* ---------- Photo slideshow (photos come from gallery.js) ---------- */
 async function initGallery() {
-  const listed = (typeof GALLERY !== "undefined" ? GALLERY : []).filter(g => g && g.img);
-  if (!listed.length) return;                      // stays hidden until you add photos
+  // Open your site with  #gallerycheck  at the end of the address to see why the slideshow shows or not
+  const check = location.hash === "#gallerycheck", say = [];
+  const report = () => {
+    if (!check) return;
+    let el = $("#gcheck");
+    if (!el) {
+      el = document.createElement("div"); el.id = "gcheck";
+      el.style.cssText = "position:fixed;left:12px;right:12px;bottom:12px;z-index:60;background:#fff3c4;color:#2a1a10;border:2px solid #c79a3f;border-radius:12px;padding:12px 14px;font:14px/1.45 system-ui,sans-serif;white-space:pre-wrap;max-height:55vh;overflow:auto";
+      document.body.appendChild(el);
+    }
+    el.textContent = "SLIDESHOW CHECK\n" + say.join("\n");
+  };
+  if (typeof GALLERY === "undefined") {
+    say.push("\u274c gallery.js was not found or has a typing mistake. Upload gallery.js to the main folder of your repository.");
+    report(); return;
+  }
+  const listed = GALLERY.filter(g => g && g.img);
+  say.push("\u2705 gallery.js loaded. Photos listed: " + listed.length);
+  if (!listed.length) { say.push("\u274c The list is empty. Add a line with img:\"images/products/yourphoto.jpg\" to gallery.js."); report(); return; }
   // keep only photos that really load, so a wrong file name never leaves a blank slide
   const items = (await Promise.all(listed.map(g => new Promise(res => {
-    const im = new Image(); im.onload = () => res(g); im.onerror = () => res(null); im.src = g.img;
+    const im = new Image();
+    im.onload = () => { say.push("\u2705 Photo found: " + g.img); res(g); };
+    im.onerror = () => { say.push("\u274c Photo NOT found: " + g.img + "  (check the file name, capital letters and that it is inside the images/products folder)"); res(null); };
+    im.src = g.img;
   })))).filter(Boolean);
-  if (!items.length) return;
+  if (!items.length) { report(); return; }
+  say.push("\u2705 Showing " + items.length + " photo(s) in the slideshow.");
+  report();
 
   const n = items.length, box = $("#gallery"), slides = $("#g-slides"), dots = $("#g-dots");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
