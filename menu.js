@@ -115,6 +115,5 @@ const FLAVOURS = [
    drawn picture.
    --------------------------------------------------------------------- */
 const TYPES = [
-  { id:"bar",  label:"Bar",  title:"Bar chocolate",      note:"100 g, 150 g or 200 g. Can be customized" },
-  { id:"mini", label:"Mini", title:"Mini chocolate", note:"Bite-size piece" }
+  { id:"bar",  label:"Bar",  title:"Bar chocolate",      note:"100 g, 150 g or 200 g. Can be customized" }
 ];
